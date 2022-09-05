@@ -5,11 +5,11 @@ import { SettingContext } from "../utils/Settings";
 
 export default function Home() {
   const collections = [
-    { th: "ดอกไม้", en: "Flowers" },
-    { th: "ต้นไม้", en: "Trees" },
-    { th: "ใบไม้", en: "Leaves" },
-    { th: "สัตว์ป่า", en: "Wild Animals" },
-    { th: "ลำธาร", en: "Creek" },
+    { th: "ดอกไม้", en: "Flowers", ja: "花" },
+    { th: "ต้นไม้", en: "Trees", ja: "木" },
+    { th: "ใบไม้", en: "Leaves", ja: "葉っぱ" },
+    { th: "สัตว์ป่า", en: "Wild Animals", ja: "野生動物" },
+    { th: "ลำธาร", en: "Creek", ja: "小川" },
   ];
 
   return (

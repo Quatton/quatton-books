@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 const languages = [
   { id: "th", display: "ภาษาไทย" },
   { id: "en", display: "English" },
+  { id: "ja", display: "日本語" },
 ];
 
 export default function LangSelect() {

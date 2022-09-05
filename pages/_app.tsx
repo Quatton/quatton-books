@@ -5,7 +5,7 @@ import SettingProvider from "../utils/Settings";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <SettingProvider>
+    <>
       <Head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -44,7 +44,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
-      <Component {...pageProps} />
-    </SettingProvider>
+
+      <SettingProvider>
+        <Component {...pageProps} />
+      </SettingProvider>
+    </>
   );
 }
