@@ -6,6 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.6",
+    "@heroicons/react": "^2.0.10",
     "next": "latest",
     "next-pwa": "5.5.4",
     "react": "^17.0.2",
