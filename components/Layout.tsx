@@ -10,7 +10,7 @@ export default function Layout({ children }: Props) {
     <div className="">
       <div className="shadow-md px-6 py-4">
         <Link href="/">
-          <a className="quatton text-4xl font-semibold animate-bounce">
+          <a className="quatton text-4xl font-semibold hover:drop-shadow-sm">
             Quatton
           </a>
         </Link>
