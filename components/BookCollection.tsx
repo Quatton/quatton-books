@@ -12,7 +12,7 @@ export default function BookCollection({ title }: Props) {
   return (
     <div className="p-4">
       <div className="text-3xl">{title[locale]}</div>
-      <div className="mt-4 flex gap-4 p-1 overflow-x-auto no-scrollbar">
+      <div className="mt-4 flex gap-4 p-1 overflow-x-auto overflow-y-visible no-scrollbar">
         {_.range(30).map((i) => (
           <BookCover />
         ))}
