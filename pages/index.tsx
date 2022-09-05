@@ -4,7 +4,6 @@ import Layout from "../components/Layout";
 import { SettingContext } from "../utils/Settings";
 
 export default function Home() {
-  const { settings, setSettings } = useContext(SettingContext);
   const collections = [
     { th: "ดอกไม้", en: "Flowers" },
     { th: "ต้นไม้", en: "Trees" },
@@ -15,8 +14,8 @@ export default function Home() {
 
   return (
     <Layout>
-      {collections.map((collection) => (
-        <BookCollection key={collection.en} />
+      {collections.map((collection, idx) => (
+        <BookCollection key={idx} title={collection} />
       ))}
     </Layout>
   );
