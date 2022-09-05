@@ -7,9 +7,13 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div>
-      <div>
-        <Link href="/">Quatton</Link>
+    <div className="">
+      <div className="shadow-md px-6 py-4">
+        <Link href="/">
+          <a className="quatton text-4xl font-semibold animate-bounce">
+            Quatton
+          </a>
+        </Link>
       </div>
 
       <div>{children}</div>
