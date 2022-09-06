@@ -20,8 +20,8 @@ export default function LangSelect() {
   const { locale, locales, asPath, pathname, query } = router;
 
   function handleChange(value: string) {
-    if (value !== locale)
-      router.push({ pathname, query }, asPath, { locale: value });
+    router.push({ pathname, query }, asPath, { locale: value, shallow: true });
+    setSettings({ ...settings, lang: value });
   }
 
   return (
