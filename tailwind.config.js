@@ -13,24 +13,32 @@ module.exports = {
         hunter: "#205C2B",
       },
       animation: {
-        "pageturn-front": "pageturn-front 1s ease-in-out",
-        "pageturn-back": "pageturn-back 1s ease-in-out",
+        "pageturn-front": "pageturn-front 1s ease-in-out forwards",
+        "pageturn-back": "pageturn-back 1s ease-in-out forwards",
       },
       keyframes: {
         "pageturn-front": {
-          from: {
+          "0%": {
             transform: "rotateY(0deg)",
+            zIndex: "51",
+            display: "block",
           },
-          to: {
+          "100%": {
             transform: "rotateY(180deg)",
+            zIndex: "50",
+            display: "none",
           },
         },
         "pageturn-back": {
-          from: {
-            transform: "rotateY(-180deg)",
+          "100%": {
+            transform: "rotateY(180deg)",
+            zIndex: "50",
+            display: "block",
           },
-          to: {
+          "0%": {
             transform: "rotateY(0deg)",
+            zIndex: "51",
+            display: "none",
           },
         },
       },

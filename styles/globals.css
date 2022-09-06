@@ -39,3 +39,10 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.book-card {
+  @apply w-96 aspect-square shadow-md
+  rounded-2xl cursor-pointer hover:shadow-zinc-50
+  flex items-center justify-center 
+  transition-all duration-1000;
+}
