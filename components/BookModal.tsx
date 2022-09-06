@@ -27,10 +27,10 @@ export default function BookModal({}: Props) {
 
   return (
     <div className="flex flex-row items-center justify-center">
-      <div className="flex flex-row absolute bottom-24 gap-48">
+      <div className="flex flex-row absolute bottom-16 gap-48">
         <button
           className={`bg-camel px-4 py-2 
-          rounded-l-md 
+          rounded-l-md text-2xl
           ${
             page - 1 < 1
               ? "cursor-not-allowed bg-gray-500 text-gray-700"
@@ -43,7 +43,7 @@ export default function BookModal({}: Props) {
         </button>
         <button
           className={`bg-camel px-4 py-2 
-          rounded-r-md hover:bg-amber-200
+          rounded-r-md text-2xl
           ${
             page + 1 > PAGE_NUM
               ? "cursor-not-allowed bg-gray-500 text-gray-700"
