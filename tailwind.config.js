@@ -12,6 +12,28 @@ module.exports = {
         camel: "#C79669",
         hunter: "#205C2B",
       },
+      animation: {
+        "pageturn-front": "pageturn-front 1s ease-in-out",
+        "pageturn-back": "pageturn-back 1s ease-in-out",
+      },
+      keyframes: {
+        "pageturn-front": {
+          from: {
+            transform: "rotateY(0deg)",
+          },
+          to: {
+            transform: "rotateY(180deg)",
+          },
+        },
+        "pageturn-back": {
+          from: {
+            transform: "rotateY(-180deg)",
+          },
+          to: {
+            transform: "rotateY(0deg)",
+          },
+        },
+      },
     },
   },
   plugins: [],

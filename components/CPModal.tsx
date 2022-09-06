@@ -10,7 +10,7 @@ export default function CPModal({}: Props) {
   if (typeof query.p !== "string") return null;
 
   return (
-    <div className="absolute flex items-center justify-center w-full h-full z-30">
+    <div className="absolute flex items-center justify-center w-full h-full z-30 overflow-hidden">
       <Link href={pathname}>
         <span className="absolute flex items-center justify-center w-full h-full bg-neutral-900/70 cursor-pointer"></span>
       </Link>
