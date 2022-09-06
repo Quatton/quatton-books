@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useRouter } from "next/router";
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 
 type Props = {};
 

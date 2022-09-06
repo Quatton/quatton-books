@@ -1,6 +1,4 @@
-import { SettingContext } from "../utils/Settings";
 import Link from "next/link";
-import React, { useContext } from "react";
 import LangSelect from "./LanguageSelector";
 import CPModal from "./CPModal";
 

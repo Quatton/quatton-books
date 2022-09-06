@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import React from "react";
 import BookCover from "./BookCover";
 import _ from "lodash";
 
