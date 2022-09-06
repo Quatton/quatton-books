@@ -12,9 +12,11 @@ export default function Home() {
 
   return (
     <Layout>
-      {collections.map((collection, idx) => (
-        <BookCollection key={idx} title={collection} />
-      ))}
+      <div className="pt-2">
+        {collections.map((collection, idx) => (
+          <BookCollection key={idx} title={collection} />
+        ))}
+      </div>
     </Layout>
   );
 }
