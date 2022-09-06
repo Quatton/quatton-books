@@ -14,7 +14,7 @@ export default function BookCollection({ title }: Props) {
       <div className="text-3xl">{title[locale]}</div>
       <div className="mt-4 flex gap-4 p-1 overflow-x-auto no-scrollbar">
         {_.range(30).map((i) => (
-          <BookCover />
+          <BookCover key={i} />
         ))}
       </div>
     </div>

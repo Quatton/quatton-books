@@ -1,7 +1,5 @@
-import { useContext } from "react";
 import BookCollection from "../components/BookCollection";
 import Layout from "../components/Layout";
-import { SettingContext } from "../utils/Settings";
 
 export default function Home() {
   const collections = [
