@@ -13,4 +13,6 @@ module.exports = withPWA({
     localDetection: false,
   },
   trailingSlash: true,
+  reactStrictMode: true,
+  concurrentFeatures: true,
 });
