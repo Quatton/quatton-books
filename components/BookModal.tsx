@@ -1,137 +1,196 @@
 import _ from "lodash";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {};
 
+const PAGE_NUM = 10;
+const TILT_ANGLE = 5;
+
 export default function BookModal({}: Props) {
-  const { query } = useRouter();
-  if (typeof query.p !== "string") return null;
-  const color = query.p;
+  const router = useRouter();
+  const { query, pathname } = router;
+  if (typeof query.c !== "string" && typeof query.a !== "string") return null;
 
-  const [page, setPage] = useState(1);
+  const collectionId = query.c;
+  const articleId = query.a;
 
-  const PAGE_NUM = 10;
+  const [page, setPage] = useState(0);
 
-  const next = () => {
-    if (page + 1 <= PAGE_NUM) {
-      setPage(page + 1);
-    }
-  };
+  const lastPage = PAGE_NUM - 1;
+
+  const [isDoublePageView, setIsDoublePageView] = useState(
+    () => innerWidth > 864
+  );
+
+  const [controlEnabled, setControlEnabled] = useState(true);
+
+  const isNextAvailable =
+    ((isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
+      page + 1 < PAGE_NUM) &&
+    controlEnabled;
+  const isPrevAvailable =
+    ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
 
   const prev = () => {
-    if (page - 1 >= 1) {
-      setPage(page - 1);
+    if (isPrevAvailable) {
+      setPage(page - (isDoublePageView ? 2 : 1));
+      setControlEnabled(false);
     }
   };
 
-  return (
-    <div className="flex flex-row items-center justify-center">
-      <div className="flex flex-row absolute bottom-16 gap-48">
-        <button
-          className={`bg-camel px-4 py-2 
-          rounded-l-md text-2xl
-          ${
-            page - 1 < 1
-              ? "cursor-not-allowed bg-gray-500 text-gray-700"
-              : "hover:bg-amber-200 hover:text-amber-900"
-          }`}
-          onClick={() => prev()}
-          disabled={page - 1 < 1}
-        >
-          Prev
-        </button>
-        <button
-          className={`bg-camel px-4 py-2 
-          rounded-r-md text-2xl
-          ${
-            page + 1 > PAGE_NUM
-              ? "cursor-not-allowed bg-gray-500 text-gray-700"
-              : "hover:bg-amber-200 hover:text-amber-900"
-          }`}
-          onClick={() => next()}
-          disabled={page + 1 > PAGE_NUM}
-        >
-          Next
-        </button>
-      </div>
+  const next = () => {
+    if (isNextAvailable) {
+      setPage(page + (isDoublePageView ? 2 : 1));
+      setControlEnabled(false);
+    }
+  };
 
+  useEffect(() => {
+    const resetCenter = () => {
+      const willCenter = innerWidth > 864;
+      setIsDoublePageView(willCenter);
+      if (willCenter) setPage(page + (page % 2));
+    };
+    addEventListener("resize", resetCenter);
+    return () => {
+      removeEventListener("resize", resetCenter);
+    };
+  });
+  const shallowPush = () => {
+    if (controlEnabled) {
+      setPage(0);
+      setControlEnabled(false);
+      setTimeout(() => {
+        router.push(pathname, pathname, { shallow: true });
+      }, 2000);
+    }
+  };
+
+  console.log("---------------");
+  return (
+    <>
+      <span
+        className="
+          absolute w-full h-full"
+        onClick={shallowPush}
+      ></span>
       <div
         className={`
-      aspect-[2/1] relative 
-      flex flex-row items-center justify-items-center transition-all ease-in-out duration-1000
-      ${page % 2 === 0 ? "translate-x-48" : "-translate-x-48"}`}
+          aspect-[2/1] h-96 relative
+          flex flex-row items-center cursor-default
+          justify-items-center transition-all 
+          ease-in-out duration-1000 preserve-3d
+          ${
+            isDoublePageView || page % 2 === 1
+              ? "translate-x-48"
+              : "-translate-x-48"
+          }`}
+        style={{
+          perspective: "800px",
+          rotate: `x ${TILT_ANGLE}deg`,
+        }}
       >
-        {_.range(1, PAGE_NUM, 2).map((pageId) => (
-          <BookTurnPage
-            color={color}
-            content={[pageId, pageId + 1]}
-            page={page}
-            pageId={pageId}
-            lastPage={PAGE_NUM}
+        {_.range(PAGE_NUM).map((pageId) => (
+          <BookPage
+            key={pageId}
+            {...{
+              pageId,
+              page,
+              lastPage,
+              setControlEnabled,
+            }}
           />
         ))}
+
+        <span
+          className={`page-nav bg-gradient-to-l preserve-3d
+          ${!isDoublePageView && page % 2 === 0 ? "left-1/2" : "left-0"}
+          ${isPrevAvailable ? "cursor-pointer hover:to-amber-100" : ""}
+          `}
+          style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
+          onClick={prev}
+        >
+          <p
+            className={`-rotate-90 text-black text-sm font-light 
+            transition-all duration-200 select-none
+            ${isPrevAvailable ? "opacity-100" : "opacity-50"}`}
+          >
+            PREV
+          </p>
+        </span>
+        <span
+          className={`page-nav bg-gradient-to-r preserve-3d
+          ${!isDoublePageView && page % 2 === 1 ? "right-1/2" : "right-0"}
+          ${isNextAvailable ? "cursor-pointer hover:to-amber-100" : ""}
+          `}
+          style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
+          onClick={next}
+        >
+          <p
+            className={`rotate-90 text-black text-sm font-light 
+            transition-all duration-200 select-none
+            ${isNextAvailable ? "opacity-100" : "opacity-50"}`}
+          >
+            NEXT
+          </p>
+        </span>
       </div>
-    </div>
+    </>
   );
 }
 
-const BookStaticPage = ({ color, content }: any) => {
+const BookPage = ({ page, pageId, lastPage, setControlEnabled }: any) => {
+  // simple rule:
+  // 1. pageId is even then it's on the front
+  const isFront = pageId % 2 === 0;
+
+  // 2. page on the even side is an even number or odd - 1
+  const frontPageId = pageId - (pageId % 2);
+
+  // 3. we turn page if page > page on the right
+  const isPageExceeded = page > frontPageId;
+
+  // 4. isPageExceeded && isFront => 180
+  // -. !isPageExceeded && isFront => 0
+  // -. isPageExceeded && !isFront => 0
+  // -. !isPageExceeded && !isFront => -180
+  const isPageFlipped = isPageExceeded == isFront;
+
+  // 0 1 2 3 4 5 3 2 1 0
+  const zIndexIncrement =
+    -Math.abs(page - pageId) + page + (pageId > page ? -1 : 0);
+
+  const zIndex = 50 + lastPage + zIndexIncrement;
+  const rotateY = isPageFlipped ? 180 * (isFront ? -1 : 1) : 0;
+  const translateZ =
+    (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1) * 1;
+
+  console.log(pageId, zIndexIncrement, page === pageId ? "<-" : "");
   return (
     <div
-      className="
-      book-card z-40"
+      className={`${isFront ? "right-0 origin-left" : "left-0 origin-right"}
+        book-card rotate`}
       style={{
-        backgroundColor: `#${color}`,
+        zIndex,
+        perspective: "800px",
       }}
+      onTransitionEnd={() => setControlEnabled(true)}
     >
-      <h1 className={`text-3xl ${parseInt(color) > 8 * 8 * 8 && "text-white"}`}>
-        {content}
-      </h1>
+      <style jsx>
+        {`
+          .rotate {
+            transform: rotateX(${TILT_ANGLE}deg) rotateY(${rotateY}deg)
+              translateZ(${translateZ}px);
+          }
+        `}
+      </style>
+      <div className="flex flex-col">
+        <h2>currentPage: {page}</h2>
+        <h2>pageId: {pageId}</h2>
+        <h2>frontPageId: {frontPageId}</h2>
+        <h2>translateZ: {translateZ}</h2>
+      </div>
     </div>
-  );
-};
-
-const BookTurnPage = ({ page, lastPage, pageId, color, content }: any) => {
-  const isPageTurned = page > pageId;
-
-  // page > pageId === passed === later should cover
-  const zIndexIncrement = Math.sign(page - pageId) * pageId;
-  return (
-    <>
-      <div
-        className="
-        left-1/2
-        absolute book-card origin-left"
-        style={{
-          backgroundColor: `#${color}`,
-          rotate: `y ${isPageTurned ? 180 : 0}deg`,
-          zIndex: `${isPageTurned ? 50 : 51 + zIndexIncrement}`,
-        }}
-      >
-        <h1
-          className={`text-3xl ${parseInt(color) > 8 * 8 * 8 && "text-white"}`}
-        >
-          {content[0]}
-        </h1>
-      </div>
-      <div
-        className="
-        left-1/2
-        absolute book-card origin-left"
-        style={{
-          backgroundColor: `#${color}`,
-          transform: "translateX(-24rem)",
-          rotate: `y ${isPageTurned ? 0 : 180}deg`,
-          zIndex: `${isPageTurned ? 51 : 50 + zIndexIncrement}`,
-        }}
-      >
-        <h1
-          className={`text-3xl ${parseInt(color) > 8 * 8 * 8 && "text-white"}`}
-        >
-          {content[1]}
-        </h1>
-      </div>
-    </>
   );
 };
