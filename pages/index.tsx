@@ -1,22 +1,26 @@
+import { getCollections } from "@/utils/db";
+import { GetStaticProps } from "next";
 import BookCollection from "../components/BookCollection";
 import Layout from "../components/Layout";
 
-export default function Home() {
-  const collections = [
-    { th: "ดอกไม้", en: "Flowers", ja: "花" },
-    { th: "ต้นไม้", en: "Trees", ja: "木" },
-    { th: "ใบไม้", en: "Leaves", ja: "葉っぱ" },
-    { th: "สัตว์ป่า", en: "Wild Animals", ja: "野生動物" },
-    { th: "ลำธาร", en: "Creek", ja: "小川" },
-  ];
-
+export default function Home({ collections }: { collections: Array<any> }) {
   return (
     <Layout>
       <div className="pt-2">
-        {collections.map((collection, idx) => (
-          <BookCollection key={idx} title={collection} />
+        {collections.map((collection) => (
+          <BookCollection
+            key={collection.id}
+            title={collection.title}
+            slug={collection.id}
+            content={collection.content}
+          />
         ))}
       </div>
     </Layout>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  const collections = await getCollections();
+  return { props: { collections } };
+};
