@@ -39,8 +39,16 @@ a {
 }
 
 .book-card {
-  @apply w-96 aspect-square shadow-xl
-  rounded-md cursor-pointer
+  @apply left-1/2 absolute origin-left
+  w-96 aspect-square shadow-lg
+  rounded-md
   flex items-center justify-center 
-  transition-all duration-1000;
+  transition-all duration-1000
+  bg-white flex-col;
+}
+
+.page-nav {
+  @apply absolute transition-all duration-1000
+    from-white/0 w-12 h-96 z-[99]
+    rounded-r-lg flex justify-center items-center;
 }

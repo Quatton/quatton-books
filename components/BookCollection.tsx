@@ -7,9 +7,10 @@ import Link from "next/link";
 type Props = {
   title: MultilingualText;
   slug: string;
+  content: Array<any>;
 };
 
-export default function BookCollection({ title, slug }: Props) {
+export default function BookCollection({ title, slug, content }: Props) {
   const { locale } = useRouter();
   if (!locale || typeof title[locale as Locale] === "undefined") return null;
 
@@ -21,8 +22,8 @@ export default function BookCollection({ title, slug }: Props) {
         </a>
       </Link>
       <div className="mt-2 flex gap-1 p-1 overflow-x-auto no-scrollbar">
-        {_.range(10).map((i) => (
-          <BookCover key={i} />
+        {content.map(({ id: articleId }) => (
+          <BookCover key={articleId} slug={slug} articleId={articleId} />
         ))}
       </div>
     </div>

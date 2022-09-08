@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { FirebaseApp, initializeApp } from "firebase/app";
-import { Analytics, getAnalytics } from "firebase/analytics";
-import { Firestore, getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+// import { Analytics, getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -13,20 +14,9 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
-
 // Initialize Firebase
-let analytics: Analytics;
-let firestore: Firestore;
-if (firebaseConfig?.projectId) {
-  // Initialize Firebase
-  const app: FirebaseApp = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
-  if (app.name && typeof window !== "undefined") {
-    analytics = getAnalytics(app);
-  }
-
-  // Access Firebase services using shorthand notation
-  firestore = getFirestore();
-}
-
-export { analytics, firestore };
+// Access Firebase services using shorthand notation
+export const firestore = getFirestore();
+export const storage = getStorage();

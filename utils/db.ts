@@ -1,5 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
-import { firestore } from "./firebase.config";
+import { getDownloadURL, ref } from "firebase/storage";
+import Error from "next/error";
+import { firestore, storage } from "./firebase.config";
 
 export type MultilingualText = {
   th?: string;
@@ -26,4 +28,22 @@ export async function getCollections() {
   });
 
   return collections;
+}
+
+export async function getImageUrl(
+  collectionId: string,
+  articleId: string,
+  page: number
+) {
+  const path = `${collectionId}/${articleId}/${articleId}-${page
+    .toString()
+    .padStart(2, "0")}.png`;
+  const imageRef = ref(storage, path);
+  console.log(imageRef);
+  try {
+    const imageUrl = await getDownloadURL(imageRef);
+    return imageUrl;
+  } catch (error: unknown) {
+    return "https://images.unsplash.com/photo-1508515053963-70c7cc39dfb5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80";
+  }
 }

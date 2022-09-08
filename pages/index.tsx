@@ -12,6 +12,7 @@ export default function Home({ collections }: { collections: Array<any> }) {
             key={collection.id}
             title={collection.title}
             slug={collection.id}
+            content={collection.content}
           />
         ))}
       </div>
