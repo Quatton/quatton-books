@@ -106,8 +106,9 @@ export default function BookModal({}: Props) {
           onClick={prev}
         >
           <p
-            className="-rotate-90 text-black text-sm font-light"
-            style={{ display: isPrevAvailable ? "block" : "none" }}
+            className={`-rotate-90 text-black text-sm font-light transition-all duration-200 ${
+              isPrevAvailable ? "opacity-100" : "opacity-50"
+            }`}
           >
             PREV
           </p>
@@ -120,8 +121,8 @@ export default function BookModal({}: Props) {
           onClick={next}
         >
           <p
-            className="rotate-90 text-black text-sm font-light"
-            style={{ display: isNextAvailable ? "block" : "none" }}
+            className={`rotate-90 text-black text-sm font-light transition-all duration-200 
+            ${isNextAvailable ? "opacity-100" : "opacity-50"}`}
           >
             NEXT
           </p>
