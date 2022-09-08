@@ -55,10 +55,13 @@ export default function BookModal({}: Props) {
     };
   });
   const shallowPush = () => {
-    setPage(0);
-    setTimeout(() => {
-      router.push(pathname, pathname, { shallow: true });
-    }, 1200);
+    if (controlEnabled) {
+      setPage(0);
+      setControlEnabled(false);
+      setTimeout(() => {
+        router.push(pathname, pathname, { shallow: true });
+      }, 1200);
+    }
   };
   return (
     <>
