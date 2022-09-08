@@ -49,6 +49,6 @@ a {
 
 .page-nav {
   @apply absolute transition-all duration-1000
-    from-white/0 w-12 h-96 z-[99]
+    from-white/0 w-12 h-96 z-[99] ease-in-out
     rounded-r-lg flex justify-center items-center;
 }

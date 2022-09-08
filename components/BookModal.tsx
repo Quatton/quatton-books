@@ -23,19 +23,23 @@ export default function BookModal({}: Props) {
   const [controlEnabled, setControlEnabled] = useState(true);
 
   const isNextAvailable =
-    (isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
-    page + 1 < PAGE_NUM;
-  const isPrevAvailable = (isDoublePageView && page - 2 >= 0) || page - 1 >= 0;
+    ((isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
+      page + 1 < PAGE_NUM) &&
+    controlEnabled;
+  const isPrevAvailable =
+    ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
 
   const prev = () => {
     if (isPrevAvailable) {
       setPage(page - (isDoublePageView ? 2 : 1));
+      setControlEnabled(false);
     }
   };
 
   const next = () => {
     if (isNextAvailable) {
       setPage(page + (isDoublePageView ? 2 : 1));
+      setControlEnabled(false);
     }
   };
 
@@ -51,11 +55,10 @@ export default function BookModal({}: Props) {
     };
   });
   const shallowPush = () => {
-    // disable control while leaving page
-    // also if control disabled dont make stuff go
-    // ontransitionend will emit event to exit page
-    // dont exist instantly
-    router.push(pathname, pathname, { shallow: true });
+    setPage(0);
+    setTimeout(() => {
+      router.push(pathname, pathname, { shallow: true });
+    }, 1200);
   };
   return (
     <>
@@ -74,6 +77,9 @@ export default function BookModal({}: Props) {
             isDoublePageView ||
             (page % 2 === 1 ? "translate-x-48" : "-translate-x-48")
           }`}
+        style={{
+          perspective: "800px",
+        }}
       >
         {_.range(PAGE_NUM).map((pageId) => (
           <BookPage
@@ -96,7 +102,12 @@ export default function BookModal({}: Props) {
           `}
           onClick={prev}
         >
-          <p className="-rotate-90 text-black text-sm font-light">PREV</p>
+          <p
+            className="-rotate-90 text-black text-sm font-light"
+            style={{ display: isPrevAvailable ? "block" : "none" }}
+          >
+            PREV
+          </p>
         </span>
         <span
           className={`page-nav bg-gradient-to-r
@@ -105,7 +116,12 @@ export default function BookModal({}: Props) {
           `}
           onClick={next}
         >
-          <p className="rotate-90 text-black text-sm font-light">NEXT</p>
+          <p
+            className="rotate-90 text-black text-sm font-light"
+            style={{ display: isNextAvailable ? "block" : "none" }}
+          >
+            NEXT
+          </p>
         </span>
       </div>
     </>
@@ -141,8 +157,9 @@ const BookPage = ({ page, pageId, next, prev, setControlEnabled }: any) => {
         rotate: `y ${isPageFlipped ? 180 : 0}deg`,
         zIndex: `${(isPageFlipped ? 50 : 51) + zIndexIncrement}`,
         transform: isFront ? "" : "translateX(-24rem)",
+        perspective: "800px",
       }}
-      onTransitionEnd={() => setControlEnabled(false)}
+      onTransitionEnd={() => setControlEnabled(true)}
     >
       <div className="flex flex-col">
         <h2>currentPage: {page}</h2>
