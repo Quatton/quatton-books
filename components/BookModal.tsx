@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 type Props = {};
 
 const PAGE_NUM = 10;
-const TILT_ANGLE = 15;
+const TILT_ANGLE = 5;
 
 export default function BookModal({}: Props) {
   const router = useRouter();
