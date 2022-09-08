@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 
 type Props = {};
 
+const PAGE_NUM = 10;
+const TILT_ANGLE = 15;
+
 export default function BookModal({}: Props) {
   const router = useRouter();
   const { query, pathname } = router;
@@ -14,7 +17,7 @@ export default function BookModal({}: Props) {
 
   const [page, setPage] = useState(0);
 
-  const PAGE_NUM = 10;
+  const lastPage = PAGE_NUM - 1;
 
   const [isDoublePageView, setIsDoublePageView] = useState(
     () => innerWidth > 864
@@ -60,12 +63,13 @@ export default function BookModal({}: Props) {
       setControlEnabled(false);
       setTimeout(() => {
         router.push(pathname, pathname, { shallow: true });
-      }, 1200);
+      }, 2000);
     }
   };
+
+  console.log("---------------");
   return (
     <>
-      {/* TODO: Move this to Backdrop component*/}
       <span
         className="
           absolute w-full h-full"
@@ -73,15 +77,18 @@ export default function BookModal({}: Props) {
       ></span>
       <div
         className={`
-          aspect-[2/1]
-          h-96 relative flex flex-row items-center cursor-default
-          justify-items-center transition-all ease-in-out duration-1000
+          aspect-[2/1] h-96 relative
+          flex flex-row items-center cursor-default
+          justify-items-center transition-all 
+          ease-in-out duration-1000 preserve-3d
           ${
-            isDoublePageView ||
-            (page % 2 === 1 ? "translate-x-48" : "-translate-x-48")
+            isDoublePageView || page % 2 === 1
+              ? "translate-x-48"
+              : "-translate-x-48"
           }`}
         style={{
           perspective: "800px",
+          rotate: `x ${TILT_ANGLE}deg`,
         }}
       >
         {_.range(PAGE_NUM).map((pageId) => (
@@ -90,38 +97,39 @@ export default function BookModal({}: Props) {
             {...{
               pageId,
               page,
-              next,
-              prev,
+              lastPage,
               setControlEnabled,
             }}
           />
         ))}
 
-        {/* TODO: disable all control when turning page*/}
         <span
-          className={`page-nav bg-gradient-to-l
+          className={`page-nav bg-gradient-to-l preserve-3d
           ${!isDoublePageView && page % 2 === 0 ? "left-1/2" : "left-0"}
           ${isPrevAvailable ? "cursor-pointer hover:to-amber-100" : ""}
           `}
+          style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={prev}
         >
           <p
-            className={`-rotate-90 text-black text-sm font-light transition-all duration-200 ${
-              isPrevAvailable ? "opacity-100" : "opacity-50"
-            }`}
+            className={`-rotate-90 text-black text-sm font-light 
+            transition-all duration-200 select-none
+            ${isPrevAvailable ? "opacity-100" : "opacity-50"}`}
           >
             PREV
           </p>
         </span>
         <span
-          className={`page-nav bg-gradient-to-r
+          className={`page-nav bg-gradient-to-r preserve-3d
           ${!isDoublePageView && page % 2 === 1 ? "right-1/2" : "right-0"}
           ${isNextAvailable ? "cursor-pointer hover:to-amber-100" : ""}
           `}
+          style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={next}
         >
           <p
-            className={`rotate-90 text-black text-sm font-light transition-all duration-200 
+            className={`rotate-90 text-black text-sm font-light 
+            transition-all duration-200 select-none
             ${isNextAvailable ? "opacity-100" : "opacity-50"}`}
           >
             NEXT
@@ -132,45 +140,56 @@ export default function BookModal({}: Props) {
   );
 }
 
-const BookPage = ({ page, pageId, next, prev, setControlEnabled }: any) => {
+const BookPage = ({ page, pageId, lastPage, setControlEnabled }: any) => {
   // simple rule:
   // 1. pageId is even then it's on the front
   const isFront = pageId % 2 === 0;
 
   // 2. page on the even side is an even number or odd - 1
-  const evenPageId = pageId - (pageId % 2);
+  const frontPageId = pageId - (pageId % 2);
 
   // 3. we turn page if page > page on the right
-  const isPageExceeded = page > evenPageId;
+  const isPageExceeded = page > frontPageId;
 
-  // 4. isPageTurned => morePageId = high z
-  // -. !isPageTurned => lessPageId = high z
-  const zIndexIncrement = Math.sign(page - evenPageId) * evenPageId;
-
-  // 5. isPageExceeded && isFront => 180
+  // 4. isPageExceeded && isFront => 180
   // -. !isPageExceeded && isFront => 0
   // -. isPageExceeded && !isFront => 0
-  // -. !isPageExceeded && !isFront => 180
+  // -. !isPageExceeded && !isFront => -180
   const isPageFlipped = isPageExceeded == isFront;
 
+  // 0 1 2 3 4 5 3 2 1 0
+  const zIndexIncrement =
+    -Math.abs(page - pageId) + page + (pageId > page ? -1 : 0);
+
+  const zIndex = 50 + lastPage + zIndexIncrement;
+  const rotateY = isPageFlipped ? 180 * (isFront ? -1 : 1) : 0;
+  const translateZ =
+    (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1) * 1;
+
+  console.log(pageId, zIndexIncrement, page === pageId ? "<-" : "");
   return (
     <div
-      className="
-      book-card"
+      className={`${isFront ? "right-0 origin-left" : "left-0 origin-right"}
+        book-card rotate`}
       style={{
-        rotate: `y ${isPageFlipped ? 180 : 0}deg`,
-        zIndex: `${(isPageFlipped ? 50 : 51) + zIndexIncrement}`,
-        transform: isFront ? "" : "translateX(-24rem)",
+        zIndex,
         perspective: "800px",
       }}
       onTransitionEnd={() => setControlEnabled(true)}
     >
+      <style jsx>
+        {`
+          .rotate {
+            transform: rotateX(${TILT_ANGLE}deg) rotateY(${rotateY}deg)
+              translateZ(${translateZ}px);
+          }
+        `}
+      </style>
       <div className="flex flex-col">
         <h2>currentPage: {page}</h2>
         <h2>pageId: {pageId}</h2>
-        <h2>rightPageId: {evenPageId}</h2>
-        <h2>shouldBeTurned?: {isPageExceeded ? "true" : "false"}</h2>
-        <h2>side: {isFront ? "front" : "back"}</h2>
+        <h2>frontPageId: {frontPageId}</h2>
+        <h2>translateZ: {translateZ}</h2>
       </div>
     </div>
   );

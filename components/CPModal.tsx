@@ -10,7 +10,7 @@ export default function CPModal({}: Props) {
 
   return (
     <div
-      className="
+      className="s
       absolute flex items-center justify-center
       w-full h-full z-30 bg-neutral-900/70 overflow-hidden"
     >
