@@ -1,4 +1,7 @@
+import { getImageUrl } from "@/utils/db";
+import { useLoadImage } from "@/utils/utils";
 import _ from "lodash";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
@@ -57,23 +60,29 @@ export default function BookModal({}: Props) {
       removeEventListener("resize", resetCenter);
     };
   });
-  const shallowPush = () => {
+
+  const exit = () => {
     if (controlEnabled) {
+      if (page === 0) {
+        shallowPush();
+        return;
+      }
       setPage(0);
-      setControlEnabled(false);
       setTimeout(() => {
-        router.push(pathname, pathname, { shallow: true });
+        shallowPush();
       }, 2000);
     }
   };
+  const shallowPush = () => {
+    router.push(pathname, pathname, { shallow: true });
+  };
 
-  console.log("---------------");
   return (
     <>
       <span
         className="
           absolute w-full h-full"
-        onClick={shallowPush}
+        onClick={exit}
       ></span>
       <div
         className={`
@@ -90,6 +99,8 @@ export default function BookModal({}: Props) {
           perspective: "800px",
           rotate: `x ${TILT_ANGLE}deg`,
         }}
+        onAnimationStart={() => setControlEnabled(false)}
+        onAnimationEnd={() => setControlEnabled(true)}
       >
         {_.range(PAGE_NUM).map((pageId) => (
           <BookPage
@@ -99,6 +110,8 @@ export default function BookModal({}: Props) {
               page,
               lastPage,
               setControlEnabled,
+              collectionId,
+              articleId,
             }}
           />
         ))}
@@ -140,7 +153,14 @@ export default function BookModal({}: Props) {
   );
 }
 
-const BookPage = ({ page, pageId, lastPage, setControlEnabled }: any) => {
+const BookPage = ({
+  page,
+  pageId,
+  lastPage,
+  setControlEnabled,
+  collectionId,
+  articleId,
+}: any) => {
   // simple rule:
   // 1. pageId is even then it's on the front
   const isFront = pageId % 2 === 0;
@@ -166,7 +186,13 @@ const BookPage = ({ page, pageId, lastPage, setControlEnabled }: any) => {
   const translateZ =
     (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1) * 1;
 
-  console.log(pageId, zIndexIncrement, page === pageId ? "<-" : "");
+  //imageLoad
+  const [url, isLoading, setLoading] = useLoadImage(
+    collectionId,
+    articleId,
+    pageId
+  );
+
   return (
     <div
       className={`${isFront ? "right-0 origin-left" : "left-0 origin-right"}
@@ -185,12 +211,14 @@ const BookPage = ({ page, pageId, lastPage, setControlEnabled }: any) => {
           }
         `}
       </style>
-      <div className="flex flex-col">
-        <h2>currentPage: {page}</h2>
-        <h2>pageId: {pageId}</h2>
-        <h2>frontPageId: {frontPageId}</h2>
-        <h2>translateZ: {translateZ}</h2>
-      </div>
+      <Image
+        src={url}
+        onLoadingComplete={() => setLoading(true)}
+        layout="fill"
+        style={{
+          display: isLoading ? "none" : "block",
+        }}
+      />
     </div>
   );
 };

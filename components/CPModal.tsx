@@ -5,7 +5,7 @@ type Props = {};
 
 export default function CPModal({}: Props) {
   const router = useRouter();
-  const { query, pathname } = router;
+  const { query } = router;
   if (typeof query.a !== "string" && typeof query.a !== "boolean") return null;
 
   return (
