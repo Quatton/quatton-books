@@ -1,12 +1,10 @@
-/** @type {import('next').NextConfig} */
 const withPWA = require("next-pwa");
 const runtimeCaching = require("next-pwa/cache");
+const { withPlaiceholder } = require("@plaiceholder/next");
+const withPlugins = require("next-compose-plugins");
 
-module.exports = withPWA({
-  pwa: {
-    dest: "public",
-    runtimeCaching,
-  },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   i18n: {
     locales: ["en", "th", "ja"],
     defaultLocale: "en",
@@ -27,4 +25,15 @@ module.exports = withPWA({
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
   },
+};
+
+const pwaPlugin = withPWA({
+  pwa: {
+    dest: "public",
+    runtimeCaching,
+  },
 });
+
+const plaiceholderPlugin = withPlaiceholder();
+
+module.exports = withPlugins([pwaPlugin, plaiceholderPlugin], nextConfig);

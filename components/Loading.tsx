@@ -1,23 +1,12 @@
-import { useLoadImage } from "@/utils/utils";
+import { useState } from "react";
 import Image from "next/image";
 
 type Props = {
-  collectionId: string;
-  articleId: string;
-  pageId: number;
+  src: string;
 };
 
-export default function LoadingImage({
-  collectionId,
-  articleId,
-  pageId,
-}: Props) {
-  const [url, isLoading, setLoading] = useLoadImage(
-    collectionId,
-    articleId,
-    pageId
-  );
-
+export default function LoadingImage({ src }: Props) {
+  const [isLoading, setLoading] = useState(true);
   return (
     <div role="status">
       <svg
@@ -41,7 +30,7 @@ export default function LoadingImage({
       </svg>
       <span className="sr-only">Loading...</span>
       <Image
-        src={url}
+        src={src}
         onLoadingComplete={() => setLoading(true)}
         layout="fill"
         style={{

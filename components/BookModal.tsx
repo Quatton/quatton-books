@@ -1,5 +1,3 @@
-import { getImageUrl } from "@/utils/db";
-import { useLoadImage } from "@/utils/utils";
 import _ from "lodash";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -186,13 +184,6 @@ const BookPage = ({
   const translateZ =
     (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1) * 1;
 
-  //imageLoad
-  const [url, isLoading, setLoading] = useLoadImage(
-    collectionId,
-    articleId,
-    pageId
-  );
-
   return (
     <div
       className={`${isFront ? "right-0 origin-left" : "left-0 origin-right"}
@@ -211,14 +202,6 @@ const BookPage = ({
           }
         `}
       </style>
-      <Image
-        src={url}
-        onLoadingComplete={() => setLoading(true)}
-        layout="fill"
-        style={{
-          display: isLoading ? "none" : "block",
-        }}
-      />
     </div>
   );
 };
