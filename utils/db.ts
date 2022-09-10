@@ -52,12 +52,8 @@ export type ArticleType<A extends ArticleTypeName> = A extends "images"
 
 export interface ImageArticle extends BaseArticle {
   type: "images";
-  images?: ArticleImages;
+  images?: ImageSrc[];
 }
-
-export type ArticleImages = {
-  [page: string]: ImageSrc;
-};
 
 export type ImageSrc = {
   img: ImageProps;
@@ -114,39 +110,22 @@ export async function getArticles<T extends ArticleTypeName>(options?: {
   return articles;
 }
 
-export async function loadImagesToFirestore() {
-  const imageArticles = await getArticles({ type: "images" });
-  imageArticles.forEach(async (article) => {
-    if (article.images) return;
-    const imageRefs = await getImageRefsFromArticle(
-      article.collectionId,
-      article.id
-    );
-    const images: ArticleImages = arrayToObject(
-      await getAllImagesFromRefs(imageRefs)
-    );
-
-    console.log(images instanceof Array);
-    await setDoc(doc(firestore, "articles", article.id), {
-      ...article,
-      images,
-    });
-  });
-}
-
-function arrayToObject<T>(array: Array<T>) {
-  const object = array.reduce(
-    (prev, cur, idx) => ({ ...prev, [idx]: cur }),
-    {}
+export async function getImagesFromArticle(article: ImageArticle) {
+  const imageRefs = await getImageRefsFromArticle(
+    article.collectionId,
+    article.id
   );
-  return object;
+  const images: ImageSrc[] = await getAllImagesFromRefs(imageRefs);
+  return images;
 }
 
 async function getAllImagesFromRefs(imageRefs: StorageReference[]) {
   const images: ImageSrc[] = await Promise.all(
     imageRefs.map(async (imageRef) => {
       try {
-        return await getPlaiceholder(await getDownloadURL(imageRef));
+        return await getPlaiceholder(await getDownloadURL(imageRef), {
+          size: 64,
+        });
       } catch (error) {
         return await getPlaiceholder(placeholderURL);
       }

@@ -6,7 +6,8 @@ import {
   getArticles,
   getCollection,
   getCollections,
-  loadImagesToFirestore,
+  getImagesFromArticle,
+  ImageArticle,
 } from "@/utils/db";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
@@ -41,8 +42,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   let collection;
   try {
     collection = await getCollection(collectionId);
-    const articles = await getArticles({ type: "images", collectionId });
-
+    const articles: ImageArticle[] = await Promise.all(
+      (
+        await getArticles({ type: "images", collectionId })
+      ).map(async (article) => ({
+        ...article,
+        images: await getImagesFromArticle(article),
+      }))
+    );
     return {
       props: { collection, articles },
     };
