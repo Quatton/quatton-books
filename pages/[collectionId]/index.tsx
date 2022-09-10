@@ -2,7 +2,7 @@ import BookCollection from "@/components/BookCollection";
 import Layout from "@/components/Layout";
 import {
   Article,
-  Collection,
+  ICOllection,
   getArticles,
   getCollection,
   getCollections,
@@ -13,7 +13,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
 
 type Props = {
-  collection: Collection;
+  collection: ICOllection;
   articles: Article[];
 };
 
@@ -52,8 +52,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     );
     return {
       props: { collection, articles },
+      revalidate: 60,
     };
   } catch (err) {
-    return { notFound: true };
+    return {
+      notFound: true,
+      revalidate: 60,
+    };
   }
 };

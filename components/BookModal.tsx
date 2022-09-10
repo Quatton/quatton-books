@@ -1,37 +1,23 @@
+import { ImageSrc } from "@/utils/db";
 import _ from "lodash";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { setInterval } from "timers";
 
-type Props = {};
+type Props = {
+  images: ImageSrc[];
+};
 
 const PAGE_NUM = 10;
 const TILT_ANGLE = 5;
 
-export default function BookModal({}: Props) {
+export default function BookModal({ images }: Props) {
   const router = useRouter();
-  const { query, pathname } = router;
-  if (typeof query.c !== "string" && typeof query.a !== "string") return null;
 
-  const collectionId = query.c;
-  const articleId = query.a;
-
-  const [page, setPage] = useState(0);
-
-  const lastPage = PAGE_NUM - 1;
-
-  const [isDoublePageView, setIsDoublePageView] = useState(
-    () => innerWidth > 864
-  );
-
-  const [controlEnabled, setControlEnabled] = useState(true);
-
-  const isNextAvailable =
-    ((isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
-      page + 1 < PAGE_NUM) &&
-    controlEnabled;
-  const isPrevAvailable =
-    ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
+  const shallowPush = () => {
+    router.push(pathname, pathname, { shallow: true });
+  };
 
   const prev = () => {
     if (isPrevAvailable) {
@@ -47,6 +33,38 @@ export default function BookModal({}: Props) {
     }
   };
 
+  const exit = () => {
+    if (controlEnabled) {
+      const closePageStaggeringTimer = setInterval(() => {
+        prev();
+        if (page === 0) {
+          exit();
+          clearInterval(closePageStaggeringTimer);
+        }
+      }, Math.floor(2000 / page));
+    }
+  };
+
+  const { query, pathname } = router;
+  if (typeof query.a !== "string") {
+    shallowPush();
+  }
+
+  const lastPage = images.length;
+  const [page, setPage] = useState(0);
+  const [isDoublePageView, setIsDoublePageView] = useState(
+    () => innerWidth > 864
+  );
+
+  const [controlEnabled, setControlEnabled] = useState(true);
+
+  const isNextAvailable =
+    ((isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
+      page + 1 < PAGE_NUM) &&
+    controlEnabled;
+  const isPrevAvailable =
+    ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
+
   useEffect(() => {
     const resetCenter = () => {
       const willCenter = innerWidth > 864;
@@ -58,22 +76,6 @@ export default function BookModal({}: Props) {
       removeEventListener("resize", resetCenter);
     };
   });
-
-  const exit = () => {
-    if (controlEnabled) {
-      if (page === 0) {
-        shallowPush();
-        return;
-      }
-      setPage(0);
-      setTimeout(() => {
-        shallowPush();
-      }, 2000);
-    }
-  };
-  const shallowPush = () => {
-    router.push(pathname, pathname, { shallow: true });
-  };
 
   return (
     <>
@@ -108,8 +110,7 @@ export default function BookModal({}: Props) {
               page,
               lastPage,
               setControlEnabled,
-              collectionId,
-              articleId,
+              image: images[pageId],
             }}
           />
         ))}
@@ -151,14 +152,21 @@ export default function BookModal({}: Props) {
   );
 }
 
+type BookPageProps = {
+  page: number;
+  pageId: number;
+  lastPage: number;
+  setControlEnabled: Dispatch<SetStateAction<boolean>>;
+  image: ImageSrc;
+};
+
 const BookPage = ({
   page,
   pageId,
   lastPage,
   setControlEnabled,
-  collectionId,
-  articleId,
-}: any) => {
+  image,
+}: BookPageProps) => {
   // simple rule:
   // 1. pageId is even then it's on the front
   const isFront = pageId % 2 === 0;

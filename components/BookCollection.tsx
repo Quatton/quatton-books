@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import BookCover from "./BookCover";
 import _ from "lodash";
-import { Article, Collection, Locale } from "@/utils/db";
+import { Article, ICOllection, Locale } from "@/utils/db";
 import Link from "next/link";
 
-type Props = Collection & { articles: Article[] };
+type Props = ICOllection & { articles: Article[] };
 
 export default function BookCollection({
   title,

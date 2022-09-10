@@ -1,11 +1,12 @@
 import {
   collection,
   doc,
+  DocumentSnapshot,
   getDoc,
   getDocs,
   orderBy,
   query,
-  setDoc,
+  SnapshotOptions,
   where,
 } from "firebase/firestore";
 import {
@@ -19,7 +20,6 @@ import { getPlaiceholder } from "plaiceholder";
 import { firestore, storage } from "./firebase.config";
 import { ImageProps } from "next/image";
 import { CSSProperties } from "react";
-import { serialize } from "v8";
 
 export type Locale = "th" | "en" | "ja";
 export type MultilingualText = {
@@ -30,19 +30,12 @@ export type MultilingualText = {
 
 export type ArticleTypeName = "images" | "components";
 
-export type Collection = {
-  id: string;
-  title: MultilingualText;
-};
-
-export type Article = ImageArticle | ComponentArticle;
-
-export type BaseArticle = {
+interface BaseArticle {
   id: string;
   title: MultilingualText;
   collectionId: string;
   type: ArticleTypeName;
-};
+}
 
 export type ArticleType<A extends ArticleTypeName> = A extends "images"
   ? ImageArticle
@@ -50,43 +43,128 @@ export type ArticleType<A extends ArticleTypeName> = A extends "images"
   ? ComponentArticle
   : never;
 
+export interface Collection {
+  id: string;
+  title: MultilingualText;
+}
+
 export interface ImageArticle extends BaseArticle {
   type: "images";
-  images?: ImageSrc[];
 }
+
+export interface ComponentArticle extends BaseArticle {
+  type: "components";
+}
+
+export type Article = ImageArticle | ComponentArticle;
 
 export type ImageSrc = {
   img: ImageProps;
   css: CSSProperties;
 };
 
-export interface ComponentArticle extends BaseArticle {
-  type: "components";
+export class Collection {
+  constructor(id: string, title: MultilingualText) {
+    this.id = id;
+    this.title = title;
+  }
 }
+
+class BaseArticle {
+  constructor(
+    id: string,
+    title: MultilingualText,
+    type: ArticleTypeName,
+    collectionId: string
+  ) {
+    this.id = id;
+    this.title = title;
+    this.type = type;
+    this.collectionId = collectionId;
+  }
+}
+
+export class ImageArticle extends BaseArticle {}
+export class ComponentArticle extends BaseArticle {}
+
+const collectionConverter = {
+  toFirestore: (collection: Collection) => {
+    return {
+      id: collection.id,
+      title: collection.title,
+    };
+  },
+  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data(options) as Collection;
+    return new Collection(snapshot.id, data.title);
+  },
+};
+
+const articleConverter = {
+  toFirestore: (article: Article) => {
+    return {
+      id: article.id,
+      title: article.title,
+      type: article.type,
+      collectionId: article.collectionId,
+    };
+  },
+  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data(options) as Article;
+    switch (data.type) {
+      case "images":
+        return new ImageArticle(
+          snapshot.id,
+          data.title,
+          data.type,
+          data.collectionId
+        );
+      case "components":
+        return new ComponentArticle(
+          snapshot.id,
+          data.title,
+          data.type,
+          data.collectionId
+        );
+    }
+  },
+};
 
 export const placeholderURL =
   "https://images.unsplash.com/photo-1508515053963-70c7cc39dfb5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80";
 
 export async function getCollections() {
-  const q = query(collection(firestore, "collections"), orderBy("title"));
-  const snapshot = await getDocs(q);
+  const q = collection(firestore, "collections");
+  const snapshot = await getDocs(q.withConverter(collectionConverter));
 
   const collections: Collection[] = snapshot.docs
-    .map((item) => ({ id: item.id, ...item.data() } as Collection))
+    .map((item) => ({ ...item.data() }))
     .filter((data) => data !== undefined);
   return collections;
 }
 
 export async function getCollection(collectionId: string) {
-  const item = await getDoc(doc(firestore, "collections", collectionId));
-  const collection = { id: item.id, ...item.data() } as Collection;
-  return collection;
+  try {
+    const collection = await getDoc(
+      doc(firestore, "collections", collectionId).withConverter(
+        collectionConverter
+      )
+    );
+    return collection;
+  } catch (e) {
+    return undefined;
+  }
 }
 
 export async function getArticle(articleId: string) {
-  const item = await getDoc(doc(firestore, "articles", articleId));
-  const Article = { id: item.id, ...item.data() } as Article;
-  return Article;
+  try {
+    const article = await getDoc(
+      doc(firestore, "articles", articleId).withConverter(articleConverter)
+    );
+    return article;
+  } catch (e) {
+    return undefined;
+  }
 }
 
 export async function getArticles<T extends ArticleTypeName>(options?: {
@@ -123,15 +201,17 @@ async function getAllImagesFromRefs(imageRefs: StorageReference[]) {
   const images: ImageSrc[] = await Promise.all(
     imageRefs.map(async (imageRef) => {
       try {
-        return await getPlaiceholder(await getDownloadURL(imageRef), {
-          size: 64,
-        });
+        return await getPlaiceholder(await getDownloadURL(imageRef));
       } catch (error) {
         return await getPlaiceholder(placeholderURL);
       }
     })
   );
   return images;
+}
+
+async function getCoverImageFromRefs(imageRefs: StorageReference[]) {
+  return await getPlaiceholder(await getDownloadURL(imageRefs[0]));
 }
 
 async function getImageRefsFromArticle(
@@ -142,6 +222,10 @@ async function getImageRefsFromArticle(
     await listAll(ref(storage, `${collectionId}/${articleId}`))
   ).items;
   return imageRefs;
+}
+
+async function getImageUrlFromRef(imageRef: StorageReference) {
+  return await getDownloadURL(imageRef);
 }
 
 export async function getImageUrl(
