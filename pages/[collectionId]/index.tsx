@@ -1,26 +1,18 @@
 import BookCollection from "@/components/BookCollection";
 import Layout from "@/components/Layout";
-import {
-  Article,
-  Collection,
-  getArticles,
-  getCollectionById,
-  getCollections,
-  getImagesById,
-  ImageArticle,
-} from "@/utils/api";
+import Collection from "@/interfaces/collection";
+import { getCollectionById, getCollections } from "@/utils/api";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
 
 type Props = {
   collection: Collection;
-  articles: Article[];
 };
 
-export default function CollectionPage({ collection, articles }: Props) {
+export default function CollectionPage({ collection }: Props) {
   return (
     <Layout>
-      <BookCollection {...{ ...collection, articles }} />
+      <BookCollection {...collection} />
     </Layout>
   );
 }
@@ -39,25 +31,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { collectionId } = params as { collectionId: string };
-  let collection;
-  try {
-    collection = await getCollectionById(collectionId);
-    const articles: ImageArticle[] = await Promise.all(
-      (
-        await getArticles({ type: "images", collectionId })
-      ).map(async (article) => ({
-        ...article,
-        images: await getImagesById(article),
-      }))
-    );
-    return {
-      props: { collection, articles },
-      revalidate: 60,
-    };
-  } catch (err) {
+  const collection = await getCollectionById(collectionId);
+  if (!collection)
     return {
       notFound: true,
       revalidate: 60,
     };
-  }
+
+  return {
+    props: { collection: collection.data() },
+    revalidate: 60,
+  };
 };

@@ -1,16 +1,34 @@
+import { PLACEHOLDER_URL } from "@/constants/placeholder";
+import { ArticleTypeName } from "@/interfaces/article";
+import Assets, { Images, ImageSource } from "@/interfaces/assets";
+import { MultilingualText } from "@/interfaces/text";
 import _ from "lodash";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { setInterval } from "timers";
 
-const PAGE_NUM = 10;
 const TILT_ANGLE = 5;
 
-export default function BookModal({}: Props) {
+type Props = {
+  collectionId: string;
+  id: string;
+  title: MultilingualText;
+  type: ArticleTypeName;
+  assets?: Assets;
+};
+
+export default function BookModal({
+  collectionId,
+  id: articleId,
+  title,
+  type,
+  assets,
+}: Props) {
   const router = useRouter();
 
-  const shallowPush = () => {
-    router.push(pathname, pathname, { shallow: true });
+  const backToCollection = () => {
+    router.back();
   };
 
   const prev = () => {
@@ -39,30 +57,18 @@ export default function BookModal({}: Props) {
     }
   };
 
-  const { query, pathname } = router;
-  if (typeof query.a !== "string") {
-    shallowPush();
-    return null;
-  }
+  const [images, setImages] = useState<Images>({});
 
-  const articleId = query.a;
-  const article = getArticleFromId(articleId);
-  if (!article) {
-    shallowPush();
-    return;
-  }
-
-  const lastPage = images.length;
+  const lastPage = Object.keys(images).length - 1;
   const [page, setPage] = useState(0);
   const [isDoublePageView, setIsDoublePageView] = useState(
     () => innerWidth > 864
   );
 
   const [controlEnabled, setControlEnabled] = useState(true);
-
   const isNextAvailable =
-    ((isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
-      page + 1 < PAGE_NUM) &&
+    ((isDoublePageView && page + 2 <= lastPage + (lastPage % 2)) ||
+      page + 1 < lastPage) &&
     controlEnabled;
   const isPrevAvailable =
     ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
@@ -74,18 +80,18 @@ export default function BookModal({}: Props) {
       if (willCenter) setPage(page + (page % 2));
     };
     addEventListener("resize", resetCenter);
+
+    if (assets) {
+      setImages(assets.images);
+    }
+
     return () => {
       removeEventListener("resize", resetCenter);
     };
-  });
+  }, []);
 
   return (
-    <>
-      <span
-        className="
-          absolute w-full h-full"
-        onClick={exit}
-      ></span>
+    <div className="w-full h-full absolute flex items-center justify-center">
       <div
         className={`
           aspect-[2/1] h-96 relative
@@ -93,9 +99,8 @@ export default function BookModal({}: Props) {
           justify-items-center transition-all 
           ease-in-out duration-1000 preserve-3d
           ${
-            isDoublePageView || page % 2 === 1
-              ? "translate-x-48"
-              : "-translate-x-48"
+            isDoublePageView ||
+            (page % 2 === 1 ? "translate-x-48" : "-translate-x-48")
           }`}
         style={{
           perspective: "800px",
@@ -104,7 +109,7 @@ export default function BookModal({}: Props) {
         onAnimationStart={() => setControlEnabled(false)}
         onAnimationEnd={() => setControlEnabled(true)}
       >
-        {_.range(PAGE_NUM).map((pageId) => (
+        {_.range(lastPage).map((pageId) => (
           <BookPage
             key={pageId}
             {...{
@@ -112,7 +117,7 @@ export default function BookModal({}: Props) {
               page,
               lastPage,
               setControlEnabled,
-              image: images[pageId],
+              image: images[`${articleId}-${pageId}`],
             }}
           />
         ))}
@@ -150,7 +155,7 @@ export default function BookModal({}: Props) {
           </p>
         </span>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -159,7 +164,7 @@ type BookPageProps = {
   pageId: number;
   lastPage: number;
   setControlEnabled: Dispatch<SetStateAction<boolean>>;
-  image: ImageSrc;
+  image: ImageSource;
 };
 
 const BookPage = ({
@@ -201,6 +206,7 @@ const BookPage = ({
       style={{
         zIndex,
         perspective: "800px",
+        ...(image?.placeholder ? image.placeholder.css : {}),
       }}
       onTransitionEnd={() => setControlEnabled(true)}
     >
@@ -212,6 +218,11 @@ const BookPage = ({
           }
         `}
       </style>
+      <Image
+        {...(image?.placeholder
+          ? image.placeholder.img
+          : { src: image?.url ? image.url : PLACEHOLDER_URL, layout: "fill" })}
+      />
     </div>
   );
 };

@@ -1,9 +1,8 @@
+import { PLACEHOLDER_URL } from "@/constants/placeholder";
 import {
   getAssetsById,
   getCollectionById,
   getCoverImageUrl,
-  loadAssetsToFirestore,
-  PLACEHOLDER_URL,
 } from "@/utils/api";
 import Assets from "./assets";
 import { MultilingualText } from "./text";
@@ -16,8 +15,8 @@ export default interface Article {
   collectionId: string;
   type: ArticleTypeName;
   isAssetsLoaded: boolean;
-  assets?: Assets;
   coverImageUrl?: string;
+  assets?: Assets;
 }
 
 export default class Article {
@@ -38,6 +37,7 @@ export default class Article {
   async getCollection() {
     return await getCollectionById(this.collectionId);
   }
+
   async getAssets() {
     const assets = await getAssetsById(
       this.collectionId,
@@ -46,6 +46,13 @@ export default class Article {
     );
     return assets;
   }
+
+  async saveAssets() {
+    const assets = await this.getAssets();
+    this.assets = assets;
+    return this;
+  }
+
   async getCoverImageUrl() {
     const cover = await getCoverImageUrl(this.collectionId, this.id);
     return cover;
@@ -54,7 +61,7 @@ export default class Article {
   async saveCoverImageUrl() {
     const cover = await this.getCoverImageUrl();
     this.coverImageUrl = cover;
-    return this.coverImageUrl;
+    return this;
   }
 
   data() {

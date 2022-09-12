@@ -6,11 +6,15 @@ type Props = {};
 export default function CPModal({}: Props) {
   const router = useRouter();
   const { query } = router;
-  if (typeof query.a !== "string" && typeof query.a !== "boolean") return null;
+  if (
+    typeof query.collectionId !== "string" &&
+    typeof query.articleId !== "boolean"
+  )
+    return null;
 
   return (
     <div
-      className="s
+      className="
       absolute flex items-center justify-center
       w-full h-full z-30 bg-neutral-900/70 overflow-hidden"
     >
