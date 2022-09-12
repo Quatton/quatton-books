@@ -81,7 +81,7 @@ export default function BookModal({
             if (state.page === 1) prev();
             else dispatch({ type: "flipPrev" });
             closePageLoop();
-          } else backToCollection();
+          } else if (state.page === 0) backToCollection();
         }, 200);
       })();
     }
