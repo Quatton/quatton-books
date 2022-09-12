@@ -39,24 +39,40 @@ a {
 }
 
 @layer components {
+  .book-container {
+    @apply aspect-[2/1] common relative
+    flex flex-row items-center cursor-default
+    justify-items-center
+    ease-in-out;
+  }
   .book-card {
-    @apply absolute
-    w-96 aspect-square shadow-sm
+    @apply absolute common aspect-square shadow-lg select-none
     rounded-md flex items-center justify-center
     transition-[transform,_z-index]
-    ease-[cubic-bezier(0,1,1,0)]
-    duration-[1500ms,_750ms]
+    duration-[1000ms,_500ms]
     bg-white flex-col;
   }
 
   .page-nav {
-    @apply absolute transition-all duration-1000
-    from-white/0 w-12 h-96 z-[99] ease-in-out
-    rounded-r-lg flex justify-center items-center;
+    @apply absolute common
+    from-white/0 w-12 z-[99]
+    rounded-r-sm flex justify-center items-center
+    hover-child:text-amber-700
+    cursor-pointer hover:to-amber-100/60;
+  }
+
+  .page-nav-button {
+    @apply text-amber-900 text-sm font-light select-none;
   }
 }
 @layer utilities {
   .preserve-3d {
     transform-style: preserve-3d;
+  }
+
+  .common {
+    @apply h-72 sm:h-96 preserve-3d
+    transition-all duration-1000
+    ease-[cubic-bezier(0,1,1,0)];
   }
 }

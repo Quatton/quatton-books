@@ -13,15 +13,15 @@ export default function Home({ collections }: { collections: Collection[] }) {
   return (
     <Layout>
       {collections.map((collection) => (
-        <div className="pt-2 flex flex-col">
-          <div className="px-4 py-2 ">
-            <Link href={collection.id} passHref key={collection.title[locale]}>
+        <div className="pt-2 flex flex-col" key={collection.id}>
+          <div className="px-4 py-2">
+            <Link href={collection.id} passHref>
               <a className="cursor-pointer text-amber-900 hover:text-amber-700 hover:underline underline-offset-2">
                 {collection.title[locale]}
               </a>
             </Link>
           </div>
-          <BookCollection {...collection} key={collection.id} />
+          <BookCollection {...collection} />
         </div>
       ))}
     </Layout>
@@ -30,11 +30,11 @@ export default function Home({ collections }: { collections: Collection[] }) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
-  // await Promise.all(
-  //   collections.map(
-  //     async (collection) => await collection.saveFeaturedArticles()
-  //   )
-  // );
+  await Promise.all(
+    collections.map(
+      async (collection) => await collection.saveFeaturedArticles()
+    )
+  );
   return {
     props: { collections: collections.map((collection) => collection.data()) },
     revalidate: 60,

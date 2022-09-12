@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export const useMediaQuery = (width: string) => {
   const [targetReached, setTargetReached] = useState(false);

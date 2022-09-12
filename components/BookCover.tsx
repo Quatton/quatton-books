@@ -1,4 +1,4 @@
-import { useRandomColor } from "@/utils/utils";
+import { useRandomColor } from "@/utils/hooks";
 import LoadingImage from "./Loading";
 import Link from "next/link";
 

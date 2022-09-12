@@ -2,13 +2,25 @@ import { PLACEHOLDER_URL } from "@/constants/placeholder";
 import { ArticleTypeName } from "@/interfaces/article";
 import Assets, { Images, ImageSource } from "@/interfaces/assets";
 import { MultilingualText } from "@/interfaces/text";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  HomeModernIcon,
+} from "@heroicons/react/24/solid";
+import { HomeIcon } from "@heroicons/react/24/outline";
 import _ from "lodash";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useReducer,
+} from "react";
 import { setInterval } from "timers";
 
-const TILT_ANGLE = 5;
+const TILT_ANGLE = 10;
 
 type Props = {
   collectionId: string;
@@ -28,56 +40,77 @@ export default function BookModal({
   const router = useRouter();
 
   const backToCollection = () => {
-    router.back();
+    router.push(`/${collectionId}`);
   };
 
-  const prev = () => {
-    if (isPrevAvailable) {
-      setPage(page - (isDoublePageView ? 2 : 1));
-      setControlEnabled(false);
-    }
-  };
+  const [state, dispatch] = useReducer(
+    (state: { page: number }, action: { type: string }): { page: number } => {
+      switch (action.type) {
+        case "next":
+          return { page: state.page + 1 };
+        case "prev":
+          return { page: state.page - 1 };
+        case "toDouble":
+          return { page: state.page + (state.page % 2) };
+        case "flipNext":
+          return { page: state.page + 2 };
+        case "flipPrev":
+          return { page: state.page - 2 };
+        default:
+          throw new Error();
+      }
+    },
+    { page: 0 }
+  );
 
-  const next = () => {
-    if (isNextAvailable) {
-      setPage(page + (isDoublePageView ? 2 : 1));
-      setControlEnabled(false);
-    }
-  };
+  const prev = () =>
+    isDoublePageView && isPrevAvailable
+      ? dispatch({ type: "flipPrev" })
+      : dispatch({ type: "prev" });
+
+  const next = () =>
+    isDoublePageView && isPrevAvailable
+      ? dispatch({ type: "flipNext" })
+      : dispatch({ type: "next" });
 
   const exit = () => {
     if (controlEnabled) {
-      const closePageStaggeringTimer = setInterval(() => {
-        prev();
-        if (page === 0) {
-          exit();
-          clearInterval(closePageStaggeringTimer);
-        }
-      }, Math.floor(2000 / page));
+      (function closePageLoop() {
+        setTimeout(() => {
+          if (state.page > 1) {
+            if (state.page === 1) prev();
+            else dispatch({ type: "flipPrev" });
+            closePageLoop();
+          }
+          if (state.page === 0) {
+            backToCollection();
+          }
+        }, 200);
+      })();
     }
   };
 
   const [images, setImages] = useState<Images>({});
 
-  const lastPage = Object.keys(images).length - 1;
-  const [page, setPage] = useState(0);
+  const lastPage =
+    Object.keys(images).filter((key) => key !== "cover").length - 1;
+  const PAGE_NUM = lastPage + 1;
   const [isDoublePageView, setIsDoublePageView] = useState(
     () => innerWidth > 864
   );
 
   const [controlEnabled, setControlEnabled] = useState(true);
   const isNextAvailable =
-    ((isDoublePageView && page + 2 <= lastPage + (lastPage % 2)) ||
-      page + 1 < lastPage) &&
-    controlEnabled;
+    (isDoublePageView && state.page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
+    state.page + 1 < PAGE_NUM;
   const isPrevAvailable =
-    ((isDoublePageView && page - 2 >= 0) || page - 1 >= 0) && controlEnabled;
+    (isDoublePageView && state.page - 2 >= 0) || state.page - 1 >= 0;
 
   useEffect(() => {
     const resetCenter = () => {
       const willCenter = innerWidth > 864;
       setIsDoublePageView(willCenter);
-      if (willCenter) setPage(page + (page % 2));
+      if (willCenter) dispatch({ type: "toDouble" });
     };
     addEventListener("resize", resetCenter);
 
@@ -91,67 +124,81 @@ export default function BookModal({
   }, []);
 
   return (
-    <div className="w-full h-full absolute flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
       <div
-        className={`
-          aspect-[2/1] h-96 relative
-          flex flex-row items-center cursor-default
-          justify-items-center transition-all 
-          ease-in-out duration-1000 preserve-3d
+        className={`book-container
           ${
             isDoublePageView ||
-            (page % 2 === 1 ? "translate-x-48" : "-translate-x-48")
+            (state.page % 2 === 1
+              ? "translate-x-36 sm:translate-x-48"
+              : "-translate-x-36 sm:-translate-x-48")
           }`}
         style={{
           perspective: "800px",
-          rotate: `x ${TILT_ANGLE}deg`,
         }}
-        onAnimationStart={() => setControlEnabled(false)}
-        onAnimationEnd={() => setControlEnabled(true)}
       >
-        {_.range(lastPage).map((pageId) => (
-          <BookPage
-            key={pageId}
-            {...{
-              pageId,
-              page,
-              lastPage,
-              setControlEnabled,
-              image: images[`${articleId}-${pageId}`],
-            }}
-          />
-        ))}
+        <div
+          className={`book-container
+          ${
+            isDoublePageView &&
+            state.page === 0 &&
+            "-translate-x-40 sm:-translate-x-48"
+          }`}
+          onAnimationStart={() => setControlEnabled(false)}
+          onAnimationEnd={() => setControlEnabled(true)}
+        >
+          {Object.entries(images)
+            .filter(([key, _]) => key !== "cover")
+            .map(([_, image], pageId) => (
+              <BookPage
+                key={pageId}
+                {...{
+                  pageId,
+                  page: state.page,
+                  lastPage,
+                  isDoublePageView,
+                  setControlEnabled,
+                  image,
+                }}
+              />
+            ))}
+        </div>
 
         <span
-          className={`page-nav bg-gradient-to-l preserve-3d
-          ${!isDoublePageView && page % 2 === 0 ? "left-1/2" : "left-0"}
-          ${isPrevAvailable ? "cursor-pointer hover:to-amber-100" : ""}
+          className={`page-nav bg-gradient-to-r 
+          ${
+            !isDoublePageView && state.page % 2 === 0
+              ? "sm:-translate-x-12 left-1/2"
+              : "right-full"
+          }
           `}
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
-          onClick={prev}
+          onClick={controlEnabled ? (isPrevAvailable ? prev : exit) : () => {}}
         >
-          <p
-            className={`-rotate-90 text-black text-sm font-light 
-            transition-all duration-200 select-none
-            ${isPrevAvailable ? "opacity-100" : "opacity-50"}`}
-          >
-            PREV
+          <p className={`page-nav-button`}>
+            {!isPrevAvailable ? (
+              <HomeIcon className="w-6 h-6" />
+            ) : (
+              <ChevronLeftIcon className="w-6 h-6" />
+            )}
           </p>
         </span>
         <span
-          className={`page-nav bg-gradient-to-r preserve-3d
-          ${!isDoublePageView && page % 2 === 1 ? "right-1/2" : "right-0"}
-          ${isNextAvailable ? "cursor-pointer hover:to-amber-100" : ""}
-          `}
+          className={`page-nav bg-gradient-to-l
+          ${
+            !isDoublePageView && state.page % 2 === 1
+              ? "sm:translate-x-12 right-1/2"
+              : "left-full"
+          }`}
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
-          onClick={next}
+          onClick={controlEnabled ? (isNextAvailable ? next : exit) : () => {}}
         >
-          <p
-            className={`rotate-90 text-black text-sm font-light 
-            transition-all duration-200 select-none
-            ${isNextAvailable ? "opacity-100" : "opacity-50"}`}
-          >
-            NEXT
+          <p className={`page-nav-button`}>
+            {!isNextAvailable ? (
+              <HomeIcon className="w-6 h-6" />
+            ) : (
+              <ChevronRightIcon className="w-6 h-6" />
+            )}
           </p>
         </span>
       </div>
@@ -163,6 +210,7 @@ type BookPageProps = {
   page: number;
   pageId: number;
   lastPage: number;
+  isDoublePageView: boolean;
   setControlEnabled: Dispatch<SetStateAction<boolean>>;
   image: ImageSource;
 };
@@ -206,7 +254,6 @@ const BookPage = ({
       style={{
         zIndex,
         perspective: "800px",
-        ...(image?.placeholder ? image.placeholder.css : {}),
       }}
       onTransitionEnd={() => setControlEnabled(true)}
     >
@@ -218,6 +265,14 @@ const BookPage = ({
           }
         `}
       </style>
+
+      <div
+        className="scale-150 blur-2xl"
+        style={{
+          ...(image?.placeholder && image.placeholder.css),
+        }}
+      ></div>
+
       <Image
         {...(image?.placeholder
           ? image.placeholder.img

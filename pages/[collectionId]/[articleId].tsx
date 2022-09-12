@@ -7,12 +7,27 @@ import React, { useEffect, useState } from "react";
 
 type Props = {
   article: Article;
+  collectionId: string;
 };
 
-export default function ArticlePage({ article }: Props) {
+export default function ArticlePage({ article, collectionId }: Props) {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
-  return <Layout>{isClient && <BookModal {...article} />}</Layout>;
+  return (
+    <Layout>
+      {isClient && (
+        <BookModal
+          {...{
+            title: article.title,
+            id: article.id,
+            type: article.type,
+            assets: article.assets,
+            collectionId,
+          }}
+        />
+      )}
+    </Layout>
+  );
 }
 
 //generate /[collectionId]/[articleId]
@@ -74,7 +89,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     await article.saveAssets();
   }
   return {
-    props: { article: article.data() },
+    props: { article: article.data(), collectionId },
     revalidate: 60,
   };
 };
