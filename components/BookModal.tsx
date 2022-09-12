@@ -88,7 +88,7 @@ export default function BookModal({
             }
             closePageLoop(page);
           } else {
-            backToCollection();
+            setTimeout(() => backToCollection(), 1000);
           }
         }, 200);
       })(state.page);
