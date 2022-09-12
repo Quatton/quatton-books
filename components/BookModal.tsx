@@ -264,7 +264,7 @@ const BookPage = ({
       </style>
 
       <div
-        className="scale-150 blur-2xl"
+        className="scale-150 blur-2xl top-0 left-0 right-0 bottom-0 w-full h-full absolute"
         style={{
           ...(image?.placeholder && image.placeholder.css),
         }}
