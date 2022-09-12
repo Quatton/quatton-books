@@ -77,14 +77,12 @@ export default function BookModal({
     if (controlEnabled) {
       (function closePageLoop() {
         setTimeout(() => {
-          if (state.page > 1) {
+          if (state.page > 0) {
             if (state.page === 1) prev();
             else dispatch({ type: "flipPrev" });
             closePageLoop();
           }
-          if (state.page === 0) {
-            backToCollection();
-          }
+          backToCollection();
         }, 200);
       })();
     }
@@ -168,7 +166,7 @@ export default function BookModal({
           className={`page-nav bg-gradient-to-r 
           ${
             !isDoublePageView && state.page % 2 === 0
-              ? "sm:-translate-x-12 left-1/2"
+              ? "-translate-x-12 left-1/2"
               : "right-full"
           }
           `}
@@ -187,7 +185,7 @@ export default function BookModal({
           className={`page-nav bg-gradient-to-l
           ${
             !isDoublePageView && state.page % 2 === 1
-              ? "sm:translate-x-12 right-1/2"
+              ? "translate-x-12 right-1/2"
               : "left-full"
           }`}
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
