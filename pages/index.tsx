@@ -30,12 +30,13 @@ export default function Home({ collections }: { collections: Collection[] }) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
-  await Promise.all(
-    collections.map(
-      async (collection) => await collection.saveFeaturedArticles()
-    )
-  );
+  // await Promise.all(
+  //   collections.map(
+  //     async (collection) => await collection.saveFeaturedArticles()
+  //   )
+  // );
   return {
     props: { collections: collections.map((collection) => collection.data()) },
+    revalidate: 60,
   };
 };
