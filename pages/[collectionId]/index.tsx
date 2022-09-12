@@ -2,18 +2,18 @@ import BookCollection from "@/components/BookCollection";
 import Layout from "@/components/Layout";
 import {
   Article,
-  ICOllection,
+  Collection,
   getArticles,
-  getCollection,
+  getCollectionById,
   getCollections,
-  getImagesFromArticle,
+  getImagesById,
   ImageArticle,
-} from "@/utils/db";
+} from "@/utils/api";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
 
 type Props = {
-  collection: ICOllection;
+  collection: Collection;
   articles: Article[];
 };
 
@@ -41,13 +41,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { collectionId } = params as { collectionId: string };
   let collection;
   try {
-    collection = await getCollection(collectionId);
+    collection = await getCollectionById(collectionId);
     const articles: ImageArticle[] = await Promise.all(
       (
         await getArticles({ type: "images", collectionId })
       ).map(async (article) => ({
         ...article,
-        images: await getImagesFromArticle(article),
+        images: await getImagesById(article),
       }))
     );
     return {

@@ -1,10 +1,14 @@
 import { useRouter } from "next/router";
 import BookCover from "./BookCover";
 import _ from "lodash";
-import { Article, ICOllection, Locale } from "@/utils/db";
-import Link from "next/link";
+import { Locale, MultilingualText } from "@/interfaces/text";
+import Article from "@/interfaces/article";
 
-type Props = ICOllection & { articles: Article[] };
+type Props = {
+  title: MultilingualText;
+  id: string;
+  articles?: Article[];
+};
 
 export default function BookCollection({
   title,
@@ -14,20 +18,15 @@ export default function BookCollection({
   const { locale } = useRouter();
   if (!locale || typeof title[locale as Locale] === "undefined") return null;
   return (
-    <div className="p-4">
-      <div className="mt-2 flex gap-1 p-1 overflow-x-auto no-scrollbar">
-        {articles.map((article) => (
-          <BookCover
-            key={article.id}
-            articleId={article.id}
-            coverImg={
-              article.type === "images" && article.images
-                ? article.images[0]
-                : undefined
-            }
-          />
-        ))}
-      </div>
+    <div className="p-4 flex gap-1 overflow-x-auto no-scrollbar">
+      {articles?.map((article) => (
+        <BookCover
+          key={article.id}
+          collectionId={collectionId}
+          articleId={article.id}
+          coverImg={article.coverImageUrl!}
+        />
+      ))}
     </div>
   );
 }

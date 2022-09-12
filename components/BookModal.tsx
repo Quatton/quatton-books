@@ -1,18 +1,12 @@
-import { ImageSrc } from "@/utils/db";
 import _ from "lodash";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { setInterval } from "timers";
 
-type Props = {
-  images: ImageSrc[];
-};
-
 const PAGE_NUM = 10;
 const TILT_ANGLE = 5;
 
-export default function BookModal({ images }: Props) {
+export default function BookModal({}: Props) {
   const router = useRouter();
 
   const shallowPush = () => {
@@ -48,6 +42,14 @@ export default function BookModal({ images }: Props) {
   const { query, pathname } = router;
   if (typeof query.a !== "string") {
     shallowPush();
+    return null;
+  }
+
+  const articleId = query.a;
+  const article = getArticleFromId(articleId);
+  if (!article) {
+    shallowPush();
+    return;
   }
 
   const lastPage = images.length;

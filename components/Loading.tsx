@@ -31,7 +31,7 @@ export default function LoadingImage({ src }: Props) {
       <span className="sr-only">Loading...</span>
       <Image
         src={src}
-        onLoadingComplete={() => setLoading(true)}
+        onLoadingComplete={() => setLoading(false)}
         layout="fill"
         style={{
           display: isLoading ? "none" : "block",

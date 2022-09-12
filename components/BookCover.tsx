@@ -1,19 +1,18 @@
-import { ImageSrc } from "@/utils/db";
-import Image from "next/image";
-import { useMemo } from "react";
+import { useRandomColor } from "@/utils/utils";
+import LoadingImage from "./Loading";
 
 type Props = {
   articleId: string;
-  coverImg: ImageSrc | undefined;
+  collectionId: string;
+  coverImg: string;
 };
 
-export default function BookCover({ articleId, coverImg }: Props) {
-  const backgroundColor =
-    "#" +
-    useMemo(
-      () => Math.floor(Math.random() * 16777215).toString(16),
-      [articleId]
-    );
+export default function BookCover({
+  articleId,
+  coverImg,
+  collectionId,
+}: Props) {
+  const backgroundColor = useRandomColor();
 
   return (
     <div
@@ -21,9 +20,9 @@ export default function BookCover({ articleId, coverImg }: Props) {
         w-36 h-36 aspect-square drop-shadow-md
         rounded-sm hover:ring-2 ring-amber-500 cursor-pointer
         flex items-center justify-center relative"
-      style={{ backgroundColor, ...coverImg?.css }}
+      style={{ backgroundColor }}
     >
-      {coverImg && <Image {...coverImg.img} />}
+      <LoadingImage src={coverImg} />
     </div>
   );
 }
