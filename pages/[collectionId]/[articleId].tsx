@@ -56,14 +56,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
    */
   type Path = { params: { collectionId: string; articleId: string } };
   const paths = collections.reduce(
-    (prev: Path[], collection) => [
-      ...prev,
-      ...collection.articles!.map((article) => ({
-        params: {
-          collectionId: collection.id,
-          articleId: article.id,
-        },
-      })),
+    (prevI: Path[], collection) => [
+      ...prevI,
+      ...collection.articles!.reduce(
+        (prevJ, article) => [
+          ...prevJ,
+          ...Object.keys(article.title).map((locale) => ({
+            params: {
+              collectionId: collection.id,
+              articleId: article.id,
+            },
+            locale,
+          })),
+        ],
+        [] as Path[]
+      ),
     ],
     [] as Path[]
   );

@@ -2,13 +2,9 @@ import { PLACEHOLDER_URL } from "@/constants/placeholder";
 import { ArticleTypeName } from "@/interfaces/article";
 import Assets, { Images, ImageSource } from "@/interfaces/assets";
 import { MultilingualText } from "@/interfaces/text";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  HomeModernIcon,
-} from "@heroicons/react/24/solid";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { HomeIcon } from "@heroicons/react/24/outline";
-import _, { last } from "lodash";
+import _ from "lodash";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -18,7 +14,6 @@ import {
   SetStateAction,
   useReducer,
 } from "react";
-import { setInterval } from "timers";
 
 const TILT_ANGLE = 10;
 
@@ -68,26 +63,35 @@ export default function BookModal({
   );
 
   const prev = () =>
-    isDoublePageView && isPrevAvailable
+    isPrevAvailable &&
+    (isDoublePageView
       ? dispatch({ type: "flipPrev" })
-      : dispatch({ type: "prev" });
+      : dispatch({ type: "prev" }));
 
   const next = () =>
-    isDoublePageView && isPrevAvailable
+    isNextAvailable &&
+    (isDoublePageView
       ? dispatch({ type: "flipNext" })
-      : dispatch({ type: "next" });
+      : dispatch({ type: "next" }));
 
   const exit = () => {
     if (controlEnabled) {
-      (function closePageLoop() {
+      (function closePageLoop(page) {
         setTimeout(() => {
-          if (state.page > 0) {
-            if (state.page === 1) prev();
-            else dispatch({ type: "flipPrev" });
-            closePageLoop();
-          } else if (state.page === 0) backToCollection();
+          if (page > 0) {
+            if (page === 1) {
+              prev();
+              page--;
+            } else {
+              dispatch({ type: "flipPrev" });
+              page -= 2;
+            }
+            closePageLoop(page);
+          } else {
+            backToCollection();
+          }
         }, 200);
-      })();
+      })(state.page);
     }
   };
 
@@ -174,7 +178,12 @@ export default function BookModal({
           }
           `}
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
-          onClick={controlEnabled ? (isPrevAvailable ? prev : exit) : () => {}}
+          onClick={() => {
+            if (controlEnabled) {
+              (isPrevAvailable ? prev : exit)();
+              setControlEnabled(false);
+            }
+          }}
         >
           <p className={`page-nav-button`}>
             {!isPrevAvailable ? (
@@ -192,7 +201,12 @@ export default function BookModal({
               : "left-full"
           }`}
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
-          onClick={controlEnabled ? (isNextAvailable ? next : exit) : () => {}}
+          onClick={() => {
+            if (controlEnabled) {
+              (isNextAvailable ? next : exit)();
+              setControlEnabled(false);
+            }
+          }}
         >
           <p className={`page-nav-button`}>
             {!isNextAvailable ? (
@@ -268,12 +282,11 @@ const BookPage = ({
       </style>
 
       <div
-        className="scale-150 blur-2xl top-0 left-0 right-0 bottom-0 w-full h-full absolute"
+        className="w-full h-full aspect-square top-0 right-0 left-0 bottom-0 scale-150 absolute blur-2xl"
         style={{
           ...(image?.placeholder && image.placeholder.css),
         }}
       ></div>
-
       <Image
         {...(image?.placeholder
           ? image.placeholder.img
