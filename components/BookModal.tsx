@@ -8,7 +8,7 @@ import {
   HomeModernIcon,
 } from "@heroicons/react/24/solid";
 import { HomeIcon } from "@heroicons/react/24/outline";
-import _ from "lodash";
+import _, { last } from "lodash";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -47,15 +47,19 @@ export default function BookModal({
     (state: { page: number }, action: { type: string }): { page: number } => {
       switch (action.type) {
         case "next":
-          return { page: state.page + 1 };
+          return {
+            page: state.page + 1 > lastPage ? lastPage : state.page + 1,
+          };
         case "prev":
-          return { page: state.page - 1 };
+          return { page: state.page - 1 < 0 ? 0 : state.page - 1 };
         case "toDouble":
           return { page: state.page + (state.page % 2) };
         case "flipNext":
-          return { page: state.page + 2 };
+          return {
+            page: state.page + 2 > lastPage ? lastPage : state.page + 2,
+          };
         case "flipPrev":
-          return { page: state.page - 2 };
+          return { page: state.page - 2 < 0 ? 0 : state.page - 2 };
         default:
           throw new Error();
       }
