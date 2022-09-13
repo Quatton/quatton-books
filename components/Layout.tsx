@@ -1,4 +1,6 @@
+import EventEmitter from "events";
 import Link from "next/link";
+import Breadcrumb from "./Breadcrumb";
 import LangSelect from "./LanguageSelector";
 
 type Props = {
@@ -21,6 +23,9 @@ export default function Layout({ children }: Props) {
       </div>
 
       <div className="relative w-full h-full overflow-y-auto no-scrollbar bg-amber-50 flex flex-col">
+        <div className="px-4 py-2">
+          <Breadcrumb />
+        </div>
         {children}
       </div>
     </div>

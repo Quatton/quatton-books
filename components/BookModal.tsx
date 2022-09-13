@@ -13,7 +13,9 @@ import {
   Dispatch,
   SetStateAction,
   useReducer,
+  useContext,
 } from "react";
+import { EventContext } from "@/utils/Event";
 
 const TILT_ANGLE = 10;
 
@@ -35,7 +37,7 @@ export default function BookModal({
   const router = useRouter();
 
   const backToCollection = () => {
-    router.push(`/${collectionId}`);
+    router.push(`/${(collectionId as string) || `/`}`);
   };
 
   const [state, dispatch] = useReducer(
@@ -74,6 +76,7 @@ export default function BookModal({
       ? dispatch({ type: "flipNext" })
       : dispatch({ type: "next" }));
 
+  const emitter = useContext(EventContext);
   const exit = () => {
     if (controlEnabled) {
       (function closePageLoop(page) {
@@ -118,15 +121,17 @@ export default function BookModal({
       if (willCenter) dispatch({ type: "toDouble" });
     };
     addEventListener("resize", resetCenter);
-
+    console.log(state.page);
+    emitter.addListener("exit", exit);
     if (assets) {
       setImages(assets.images);
     }
 
     return () => {
+      emitter.removeListener("exit", exit);
       removeEventListener("resize", resetCenter);
     };
-  }, []);
+  }, [state.page]);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
