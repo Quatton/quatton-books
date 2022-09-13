@@ -1,5 +1,4 @@
 import { EventContext } from "@/utils/Event";
-import EventEmitter from "events";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";

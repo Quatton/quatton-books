@@ -33,7 +33,7 @@ export const usePageControl = (lastPage: number, afterExit: () => void) => {
   const exit = (page = state.page) => {
     switch (page) {
       case 0:
-        setTimeout(afterExit, 500);
+        setTimeout(afterExit, 1000);
         break;
       case 1:
         prev();

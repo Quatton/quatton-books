@@ -1,23 +1,15 @@
-import { PLACEHOLDER_URL } from "@/constants/placeholder";
 import { ArticleTypeName } from "@/interfaces/article";
-import Assets, { Images, ImageSource } from "@/interfaces/assets";
+import Assets, { Images } from "@/interfaces/assets";
 import { MultilingualText } from "@/interfaces/text";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import _ from "lodash";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import {
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  useContext,
-} from "react";
+import { useState, useEffect, useContext } from "react";
 import { EventContext } from "@/utils/Event";
 import { usePageControl } from "@/utils/BookModalHooks";
 import ImageArticle from "./Articles/ImageArticle";
 import { TILT_ANGLE } from "@/constants/bookpage";
+import { useRouter } from "next/router";
 
 type Props = {
   collectionId: string;
@@ -37,7 +29,7 @@ export default function BookModal({
   const router = useRouter();
 
   const backToCollection = () => {
-    router.push(`/${(collectionId as string) || `/`}`);
+    setTimeout(() => router.push(`/${(collectionId as string) || `/`}`), 1000);
   };
 
   const [images, setImages] = useState<Images>(
@@ -71,17 +63,19 @@ export default function BookModal({
       ? flipPrev
       : prev
     : () => {};
-
+  const exitPage = () => {
+    exit();
+  };
   const emitter = useContext(EventContext);
 
   useEffect(() => {
-    emitter.addListener("exit", exit);
+    emitter.addListener("exit", exitPage);
     if (assets) {
       setImages(assets.images);
     }
 
     return () => {
-      emitter.removeListener("exit", exit);
+      emitter.removeListener("exit", exitPage);
     };
   }, [page]);
 
@@ -138,7 +132,7 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isPrevAvailable === true ? prevPage : exit)();
+              (isPrevAvailable === true ? prevPage : exitPage)();
               setControlEnabled(false);
             }
           }}
@@ -161,7 +155,7 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isNextAvailable === true ? nextPage : exit)();
+              (isNextAvailable === true ? nextPage : exitPage)();
               setControlEnabled(false);
             }
           }}
