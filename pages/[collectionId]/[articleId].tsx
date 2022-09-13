@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   if (!article.title[locale as Locale]) {
     return {
       redirect: {
-        destination: `${
+        destination: `/${
           Object.keys(article.title)[0]
         }/${collectionId}/${articleId}`,
         permanent: false,
