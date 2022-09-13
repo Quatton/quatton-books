@@ -61,8 +61,9 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   if (!collection.title[locale as Locale])
     return {
       redirect: {
-        destination: `${Object.keys(collection)}/${collectionId}`,
+        destination: `${Object.keys(collection.title)[0]}/${collectionId}`,
         permanent: false,
+        basePath: false,
       },
     };
   await collection.saveAllArticles();

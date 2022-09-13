@@ -100,6 +100,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
           Object.keys(article.title)[0]
         }/${collectionId}/${articleId}`,
         permanent: false,
+        basePath: false,
       },
       revalidate: 60,
     };
