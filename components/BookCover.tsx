@@ -19,7 +19,7 @@ export default function BookCover({
     <Link href={`${collectionId}/${articleId}`}>
       <div
         className="
-          w-36 h-36 aspect-square drop-shadow-md
+          h-24 sm:h-36 aspect-square drop-shadow-md
           rounded-sm hover:ring-2 ring-amber-500 cursor-pointer
           flex items-center justify-center relative"
         style={{ backgroundColor }}
