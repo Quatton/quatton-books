@@ -55,6 +55,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
    *  params: {collectionId, articleId}
    * }[][]
    */
+
+  /**
+   * DON'T DARE DEALING WITH THIS SHIT AGAIN
+   * PLEASE LEAVE IT AS IS, FUTURE ME.
+   */
   type Path = { params: { collectionId: string; articleId: string } };
   const paths = collections.reduce(
     (prevI: Path[], collection) => [
@@ -87,21 +92,9 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     articleId: string;
   };
   const article = await getArticleById(collectionId, articleId);
-  if (!article) {
+  if (!article || !article.title[locale as Locale]) {
     return {
       notFound: true,
-      revalidate: 60,
-    };
-  }
-  if (!article.title[locale as Locale]) {
-    return {
-      redirect: {
-        destination: `/${
-          Object.keys(article.title)[0]
-        }/${collectionId}/${articleId}`,
-        permanent: false,
-        basePath: false,
-      },
       revalidate: 60,
     };
   }
