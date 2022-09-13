@@ -1,7 +1,7 @@
 import BookCollection from "@/components/BookCollection";
 import Layout from "@/components/Layout";
 import Collection from "@/interfaces/collection";
-import { Locale } from "@/interfaces/text";
+import { LOCALE, Locale } from "@/interfaces/text";
 import { getCollectionById, getCollections } from "@/utils/api";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -35,11 +35,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
     locale?: string | undefined;
   };
   const paths: Path[] = collections.reduce(
-    (prev, { id }) => [
+    (prev, { id, title }) => [
       ...prev,
-      {
+      ...Object.keys(title).map((locale) => ({
         params: { collectionId: id },
-      },
+        locale,
+      })),
     ],
     [] as Path[]
   );

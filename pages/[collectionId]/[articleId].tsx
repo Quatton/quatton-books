@@ -62,12 +62,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
       ...collection.articles!.reduce(
         (prevJ, article) => [
           ...prevJ,
-          {
+          ...Object.keys(article.title).map((locale) => ({
             params: {
               collectionId: collection.id,
               articleId: article.id,
             },
-          },
+            locale,
+          })),
         ],
         [] as Path[]
       ),

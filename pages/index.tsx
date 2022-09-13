@@ -1,8 +1,8 @@
 import BookCollection from "@/components/BookCollection";
 import Collection from "@/interfaces/collection";
-import { Locale } from "@/interfaces/text";
+import { LOCALE, Locale } from "@/interfaces/text";
 import { getCollections } from "@/utils/api";
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
@@ -27,6 +27,16 @@ export default function Home({ collections }: { collections: Collection[] }) {
     </Layout>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: LOCALE.map((locale) => ({
+      params: {},
+      locale,
+    })),
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
