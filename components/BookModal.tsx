@@ -185,13 +185,13 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isPrevAvailable ? prev : exit)();
+              (isPrevAvailable === true ? prev : exit)();
               setControlEnabled(false);
             }
           }}
         >
           <p className={`page-nav-button`}>
-            {!isPrevAvailable ? (
+            {isPrevAvailable === false ? (
               <HomeIcon className="w-6 h-6" />
             ) : (
               <ChevronLeftIcon className="w-6 h-6" />
@@ -208,13 +208,13 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isNextAvailable ? next : exit)();
+              (isNextAvailable === true ? next : exit)();
               setControlEnabled(false);
             }
           }}
         >
           <p className={`page-nav-button`}>
-            {!isNextAvailable ? (
+            {isNextAvailable === false ? (
               <HomeIcon className="w-6 h-6" />
             ) : (
               <ChevronRightIcon className="w-6 h-6" />
