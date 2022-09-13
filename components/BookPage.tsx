@@ -9,6 +9,10 @@ type BookPageProps = {
   children: ReactNode;
 };
 
+/**
+ * Don't touch unless necessary.
+ * REPEAT. DON'T. TOUCH.
+ */
 export default function BookPage({
   page,
   pageId,
@@ -38,8 +42,7 @@ export default function BookPage({
 
   const zIndex = 50 + lastPage + zIndexIncrement;
   const rotateY = isPageFlipped ? 180 * (isFront ? -1 : 1) : 0;
-  const translateZ =
-    (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1) * 1;
+  const translateZ = (isPageFlipped ? -1 : 1) * (zIndexIncrement - page - 1);
 
   return (
     <div
