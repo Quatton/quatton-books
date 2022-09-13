@@ -2,6 +2,9 @@ const withPWA = require("next-pwa");
 const runtimeCaching = require("next-pwa/cache");
 const { withPlaiceholder } = require("@plaiceholder/next");
 const withPlugins = require("next-compose-plugins");
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -36,4 +39,7 @@ const pwaPlugin = withPWA({
 
 const plaiceholderPlugin = withPlaiceholder();
 
-module.exports = withPlugins([pwaPlugin, plaiceholderPlugin], nextConfig);
+module.exports = withPlugins(
+  [pwaPlugin, plaiceholderPlugin, [withBundleAnalyzer]],
+  nextConfig
+);
