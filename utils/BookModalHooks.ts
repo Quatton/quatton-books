@@ -30,18 +30,25 @@ export const usePageControl = (lastPage: number, afterExit: () => void) => {
   const toDouble = () => dispatch({ type: "toDouble" });
   const flipNext = () => dispatch({ type: "flipNext" });
   const flipPrev = () => dispatch({ type: "flipPrev" });
-  const exit = () => {
-    switch (pageRef.current) {
+  const exit = (page = state.page) => {
+    switch (page) {
       case 0:
-        afterExit();
+        setTimeout(afterExit, 500);
+        break;
+      case 1:
+        prev();
+        page--;
+        exit(page);
         break;
       default:
         flipPrev();
-        setTimeout(() => exit(), 200);
+        setTimeout(() => {
+          page -= 2;
+          exit(page);
+        }, 100);
     }
   };
-  const page = state.page;
-  const pageRef = useRef(page);
+  const { page } = state;
 
   const [isDoublePageView, setIsDoublePageView] = useState(
     () => innerWidth > 864

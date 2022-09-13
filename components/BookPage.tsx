@@ -1,8 +1,5 @@
 import { TILT_ANGLE } from "@/constants/bookpage";
-import { PLACEHOLDER_URL } from "@/constants/placeholder";
-import { ImageSource } from "@/interfaces/assets";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import Image from "next/image";
 
 type BookPageProps = {
   page: number;

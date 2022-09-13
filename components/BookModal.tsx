@@ -48,11 +48,11 @@ export default function BookModal({
   const lastPage = PAGE_NUM - 1;
 
   const [controlEnabled, setControlEnabled] = useState(true);
+
   const {
     page,
     next,
     prev,
-    toDouble,
     flipNext,
     flipPrev,
     exit,
@@ -60,6 +60,17 @@ export default function BookModal({
     isPrevAvailable,
     isDoublePageView,
   } = usePageControl(lastPage, backToCollection);
+
+  const nextPage = isNextAvailable
+    ? isDoublePageView
+      ? flipNext
+      : next
+    : () => {};
+  const prevPage = isPrevAvailable
+    ? isDoublePageView
+      ? flipPrev
+      : prev
+    : () => {};
 
   const emitter = useContext(EventContext);
 
@@ -127,7 +138,7 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isPrevAvailable === true ? prev : exit)();
+              (isPrevAvailable === true ? prevPage : exit)();
               setControlEnabled(false);
             }
           }}
@@ -150,7 +161,7 @@ export default function BookModal({
           style={{ zIndex: 51 + lastPage, rotate: `x ${TILT_ANGLE}deg` }}
           onClick={() => {
             if (controlEnabled) {
-              (isNextAvailable === true ? next : exit)();
+              (isNextAvailable === true ? nextPage : exit)();
               setControlEnabled(false);
             }
           }}

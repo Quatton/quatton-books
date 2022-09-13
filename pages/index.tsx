@@ -28,16 +28,6 @@ export default function Home({ collections }: { collections: Collection[] }) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: LOCALE.map((locale) => ({
-      params: {},
-      locale,
-    })),
-    fallback: "blocking",
-  };
-};
-
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
   await Promise.all(
