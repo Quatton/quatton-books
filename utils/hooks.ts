@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
 export const useMediaQuery = (width: string) => {
   const [targetReached, setTargetReached] = useState(false);
@@ -19,4 +28,14 @@ export const useMediaQuery = (width: string) => {
   }, []);
 
   return targetReached;
+};
+
+export const useRandomColor = (): string => {
+  const [color, setColor] = useState("");
+
+  useEffect(() => {
+    setColor("#" + Math.floor(Math.random() * 16777215).toString(16));
+  }, []);
+
+  return color;
 };
