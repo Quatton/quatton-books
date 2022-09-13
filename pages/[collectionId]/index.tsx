@@ -35,12 +35,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     locale?: string | undefined;
   };
   const paths: Path[] = collections.reduce(
-    (prev, { id, title }) => [
+    (prev, { id }) => [
       ...prev,
-      ...Object.keys(title).map((locale) => ({
+      {
         params: { collectionId: id },
-        locale,
-      })),
+      },
     ],
     [] as Path[]
   );
@@ -50,10 +49,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const { collectionId } = params as { collectionId: string };
   const collection = await getCollectionById(collectionId);
-  if (!collection)
+  if (!collection || !collection.title[locale as Locale])
     return {
       notFound: true,
       revalidate: 60,

@@ -1,6 +1,7 @@
 import BookModal from "@/components/BookModal";
 import Layout from "@/components/Layout";
 import Article from "@/interfaces/article";
+import { Locale } from "@/interfaces/text";
 import { getArticleById, getCollections } from "@/utils/api";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, { useEffect, useState } from "react";
@@ -61,13 +62,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
       ...collection.articles!.reduce(
         (prevJ, article) => [
           ...prevJ,
-          ...Object.keys(article.title).map((locale) => ({
+          {
             params: {
               collectionId: collection.id,
               articleId: article.id,
             },
-            locale,
-          })),
+          },
         ],
         [] as Path[]
       ),
@@ -80,13 +80,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const { collectionId, articleId } = params as {
     collectionId: string;
     articleId: string;
   };
   const article = await getArticleById(collectionId, articleId);
-  if (!article) {
+  if (!article || !article.title[locale as Locale]) {
     return {
       notFound: true,
       revalidate: 60,

@@ -49,7 +49,7 @@ a {
     @apply absolute common aspect-square shadow-lg select-none
     rounded-md flex items-center justify-center overflow-hidden
     transition-[transform,_z-index]
-    duration-[1000ms,_500ms]
+    duration-[750ms,_375ms]
     bg-white flex-col;
   }
 
