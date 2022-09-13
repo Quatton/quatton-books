@@ -53,10 +53,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const { collectionId } = params as { collectionId: string };
   const collection = await getCollectionById(collectionId);
-  if (!collection || !collection.title[locale as Locale])
+  if (!collection)
     return {
       notFound: true,
       revalidate: 60,
+    };
+  if (!collection.title[locale as Locale])
+    return {
+      redirect: {
+        destination: `${Object.keys(collection)}/${collectionId}`,
+        permanent: false,
+      },
     };
   await collection.saveAllArticles();
   return {
