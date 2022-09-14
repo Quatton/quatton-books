@@ -13,20 +13,18 @@ export default function Home({ collections }: { collections: Collection[] }) {
   const locale = router.locale as Locale;
   return (
     <Layout>
-      <div className="w-full h-full flex flex-col items-center py-10 overflow-y-auto">
-        <div className="grid grid-cols-4 grid-rows-4 gap-2 overflow-visible">
+      <div className="w-full h-full flex flex-col items-center justify-center py-10 overflow-y-auto">
+        <div className="grid grid-cols-4 gap-2 overflow-visible">
           {collections
             .filter((collection) =>
               Object.keys(collection.title).includes(locale)
             )
             .map((collection) => (
-              <Link href={`/${collection.id}`} key={collection.id} passHref>
-                <a>
-                  <BookCover
-                    coverImg={collection.articles![0]?.coverImageUrl}
-                  />
-                </a>
-              </Link>
+              <BookCover
+                key={collection.id}
+                collectionId={collection.id}
+                coverImg={collection.articles![0]?.coverImageUrl}
+              />
             ))}
         </div>
       </div>

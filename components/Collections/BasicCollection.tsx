@@ -25,9 +25,12 @@ export default function BasicCollection({
       </div>
       <div className="p-4 flex gap-1 overflow-x-auto overflow-y-visible no-scrollbar">
         {articles?.map((article) => (
-          <Link href={`/${collectionId}/${article.id}`}>
-            <BookCover key={article.id} coverImg={article.coverImageUrl!} />
-          </Link>
+          <BookCover
+            collectionId={collectionId}
+            articleId={article.id}
+            key={article.id}
+            coverImg={article.coverImageUrl!}
+          />
         ))}
       </div>
     </div>

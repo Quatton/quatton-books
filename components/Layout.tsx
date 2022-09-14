@@ -10,7 +10,7 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <div className="relative h-screen flex flex-col select-none">
-      <div className="w-full flex flex-col items-center justify-between shadow-md z-50 bg-camel/80">
+      <div className="w-full flex flex-col items-center justify-between shadow-md bg-camel/80">
         <div className="w-full flex items-center justify-between shadow-md px-6 py-4">
           <Link href={`/`}>
             <a className="quatton text-amber-900 text-4xl font-semibold">
@@ -22,7 +22,7 @@ export default function Layout({ children }: Props) {
           </span>
         </div>
 
-        <div className="w-full px-4 py-2">
+        <div className="w-full px-4 py-2 h-10 flex items-center">
           <Breadcrumb />
         </div>
       </div>

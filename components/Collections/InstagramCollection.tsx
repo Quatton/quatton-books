@@ -22,9 +22,12 @@ export default function InstagramCollection({
     <div className="w-full h-full flex flex-col items-center p-4 overflow-y-auto">
       <div className="grid grid-cols-3 gap-2 overflow-visible">
         {articles!.map((article) => (
-          <Link href={`/${collectionId}/${article.id}`}>
-            <BookCover key={article.id} coverImg={article.coverImageUrl!} />
-          </Link>
+          <BookCover
+            collectionId={collectionId}
+            articleId={article.id}
+            key={article.id}
+            coverImg={article.coverImageUrl!}
+          />
         ))}
       </div>
     </div>
