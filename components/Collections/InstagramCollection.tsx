@@ -10,7 +10,7 @@ type Props = {
   articles?: Article[];
 };
 
-export default function BasicCollection({
+export default function InstagramCollection({
   title,
   id: collectionId,
   articles,
@@ -18,12 +18,9 @@ export default function BasicCollection({
   const { locale } = useRouter();
   if (!locale || typeof title[locale as Locale] === "undefined") return null;
   return (
-    <div>
-      <div className="px-4 py-2">
-        <h1>{title[locale as Locale]}</h1>
-      </div>
-      <div className="p-4 flex gap-1 overflow-x-auto overflow-y-visible no-scrollbar">
-        {articles?.map((article) => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="grid grid-cols-3 gap-2 overflow-visible no-scrollbar">
+        {articles!.map((article) => (
           <BookCover
             key={article.id}
             collectionId={collectionId}

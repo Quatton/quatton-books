@@ -1,4 +1,5 @@
 import BasicCollection from "@/components/Collections/BasicCollection";
+import InstagramCollection from "@/components/Collections/InstagramCollection";
 import LocaleNotSupported from "@/components/Fallbacks/LocaleNotSupported";
 import Layout from "@/components/Layout";
 import Collection from "@/interfaces/collection";
@@ -42,12 +43,14 @@ export default function CollectionPage({ collection }: Props) {
 
   return (
     <Layout>
-      <div className="pt-2 flex flex-col" key={collection.id}>
-        <div className="px-4 py-2">
-          <h1>{collection.title[locale as Locale]}</h1>
-        </div>
-        <BasicCollection {...collection} />
-      </div>
+      {(() => {
+        switch (collection.id) {
+          case "studygram":
+            return <InstagramCollection {...collection} />;
+          default:
+            return <BasicCollection {...collection} />;
+        }
+      })()}
     </Layout>
   );
 }
