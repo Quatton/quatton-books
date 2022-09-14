@@ -1,4 +1,6 @@
 import BookCollection from "@/components/BookCollection";
+import Fallback from "@/components/Fallbacks/Fallback";
+import LocaleNotSupported from "@/components/Fallbacks/LocaleNotSupported";
 import Layout from "@/components/Layout";
 import Collection from "@/interfaces/collection";
 import { LOCALE, Locale } from "@/interfaces/text";
@@ -15,6 +17,19 @@ type Props = {
 export default function CollectionPage({ collection }: Props) {
   const router = useRouter();
   const { locale } = router;
+
+  if (router.isFallback) {
+    return <Fallback />;
+  }
+
+  if (!collection.title[locale as Locale]) {
+    return (
+      <LocaleNotSupported
+        localeSupported={Object.keys(collection.title) as Locale[]}
+      />
+    );
+  }
+
   return (
     <Layout>
       <div className="pt-2 flex flex-col" key={collection.id}>
@@ -37,7 +52,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths: Path[] = collections.reduce(
     (prev, { id, title }) => [
       ...prev,
-      ...Object.keys(title).map((locale) => ({
+      ...LOCALE.map((locale) => ({
         params: { collectionId: id },
         locale,
       })),
@@ -46,21 +61,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
   );
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { collectionId } = params as { collectionId: string };
   const collection = await getCollectionById(collectionId);
-  if (!collection || !collection.title[locale as Locale])
+  if (!collection)
     return {
       notFound: true,
       revalidate: 60,
     };
   await collection.saveAllArticles();
   return {
-    props: { collection: collection.data() },
+    props: {
+      collection: collection.data(),
+    },
     revalidate: 60,
   };
 };

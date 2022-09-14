@@ -1,9 +1,12 @@
 import BookModal from "@/components/BookModal";
+import Fallback from "@/components/Fallbacks/Fallback";
+import LocaleNotSupported from "@/components/Fallbacks/LocaleNotSupported";
 import Layout from "@/components/Layout";
 import Article from "@/interfaces/article";
 import { LOCALE, Locale } from "@/interfaces/text";
 import { getArticleById, getCollections } from "@/utils/api";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 type Props = {
@@ -12,8 +15,24 @@ type Props = {
 };
 
 export default function ArticlePage({ article, collectionId }: Props) {
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
+
+  const { locale } = router;
+
+  if (router.isFallback) {
+    return <Fallback />;
+  }
+
+  if (!article.title[locale as Locale]) {
+    return (
+      <LocaleNotSupported
+        localeSupported={Object.keys(article.title) as Locale[]}
+      />
+    );
+  }
+
   return (
     <Layout>
       {isClient && (
@@ -82,17 +101,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   );
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { collectionId, articleId } = params as {
     collectionId: string;
     articleId: string;
   };
   const article = await getArticleById(collectionId, articleId);
-  if (!article || !article.title[locale as Locale]) {
+  if (!article) {
     return {
       notFound: true,
       revalidate: 60,

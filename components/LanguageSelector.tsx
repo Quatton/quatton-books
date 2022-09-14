@@ -7,12 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { SettingContext } from "../utils/Settings";
 import { useRouter } from "next/router";
-
-const languages = [
-  { id: "th", display: "ภาษาไทย" },
-  { id: "en", display: "English" },
-  { id: "ja", display: "日本語" },
-];
+import { LANGUAGES } from "../constants/multilang";
 
 export default function LangSelect() {
   const { settings, setSettings } = useContext(SettingContext);
@@ -41,7 +36,7 @@ export default function LangSelect() {
               <LanguageIcon className="h-5 w-5 text-amber-700" />
             </span>
             <span className="block truncate">
-              {languages.find((language) => language.id === locale)?.display}
+              {LANGUAGES.find((language) => language.id === locale)?.display}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
@@ -75,7 +70,7 @@ export default function LangSelect() {
                         }`}
                       >
                         {
-                          languages.find((language) => language.id === lang)
+                          LANGUAGES.find((language) => language.id === lang)
                             ?.display
                         }
                       </span>
