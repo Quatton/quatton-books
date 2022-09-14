@@ -33,7 +33,7 @@ export const usePageControl = (lastPage: number, afterExit: () => void) => {
   const exit = (page = state.page) => {
     switch (page) {
       case 0:
-        setTimeout(afterExit, 1000);
+        afterExit();
         break;
       case 1:
         prev();
@@ -54,10 +54,9 @@ export const usePageControl = (lastPage: number, afterExit: () => void) => {
     () => innerWidth > 864
   );
 
-  const PAGE_NUM = lastPage + 1;
   const isNextAvailable =
-    (isDoublePageView && page + 2 <= PAGE_NUM + (PAGE_NUM % 2)) ||
-    page + 1 < PAGE_NUM;
+    (isDoublePageView && page + 2 <= lastPage + (lastPage % 2)) ||
+    page + 1 <= lastPage;
   const isPrevAvailable = (isDoublePageView && page - 2 >= 0) || page - 1 >= 0;
 
   const resetCenter = () => {

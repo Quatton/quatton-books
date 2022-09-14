@@ -36,7 +36,7 @@ export default function BookModal({
     assets?.images ? assets.images : {}
   );
 
-  const PAGE_NUM = Object.keys(images).filter((key) => key !== "cover").length;
+  const PAGE_NUM = Object.keys(images).length;
   const lastPage = PAGE_NUM - 1;
 
   const [controlEnabled, setControlEnabled] = useState(true);
@@ -82,13 +82,14 @@ export default function BookModal({
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <div
-        className={`book-container
-          ${
-            isDoublePageView ||
-            (page % 2 === 1
-              ? "translate-x-36 sm:translate-x-48"
-              : "-translate-x-36 sm:-translate-x-48")
-          }`}
+        className={`book-container 
+        ${
+          isDoublePageView ||
+          (page % 2 === 1
+            ? "translate-x-36 sm:translate-x-48"
+            : "-translate-x-36 sm:-translate-x-48")
+        }
+          `}
         style={{
           perspective: "800px",
         }}
@@ -98,7 +99,7 @@ export default function BookModal({
           ${
             isDoublePageView &&
             page === 0 &&
-            "-translate-x-40 sm:-translate-x-48"
+            "-translate-x-36 sm:-translate-x-48"
           }`}
           onAnimationStart={() => setControlEnabled(false)}
           onAnimationEnd={() => setControlEnabled(true)}

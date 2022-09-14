@@ -8,7 +8,7 @@ type Props = {
 export default function LoadingImage({ src }: Props) {
   const [isLoading, setLoading] = useState(true);
   return (
-    <div role="status">
+    <div role="status" className="">
       <svg
         className={`inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-white opacity-60`}
         viewBox="0 0 100 101"

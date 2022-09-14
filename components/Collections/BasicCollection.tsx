@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import BookCover from "./BookCover";
+import BookCover from "../BookCover";
 import _ from "lodash";
 import { Locale, MultilingualText } from "@/interfaces/text";
 import Article from "@/interfaces/article";
@@ -10,7 +10,7 @@ type Props = {
   articles?: Article[];
 };
 
-export default function BookCollection({
+export default function BasicCollection({
   title,
   id: collectionId,
   articles,
@@ -18,7 +18,7 @@ export default function BookCollection({
   const { locale } = useRouter();
   if (!locale || typeof title[locale as Locale] === "undefined") return null;
   return (
-    <div className="p-4 flex gap-1 overflow-x-auto no-scrollbar">
+    <div className="p-4 flex gap-1 overflow-x-auto overflow-y-visible no-scrollbar">
       {articles?.map((article) => (
         <BookCover
           key={article.id}

@@ -1,8 +1,8 @@
-import BookCollection from "@/components/BookCollection";
+import BasicCollection from "@/components/Collections/BasicCollection";
 import Collection from "@/interfaces/collection";
-import { LOCALE, Locale } from "@/interfaces/text";
+import { Locale } from "@/interfaces/text";
 import { getCollections } from "@/utils/api";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
@@ -21,7 +21,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
               </a>
             </Link>
           </div>
-          <BookCollection {...collection} />
+          <BasicCollection {...collection} />
         </div>
       ))}
     </Layout>

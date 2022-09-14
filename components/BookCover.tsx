@@ -20,11 +20,13 @@ export default function BookCover({
       <div
         className="
           h-[7.5rem] sm:h-36 aspect-square drop-shadow-md
-          rounded-sm hover:ring-2 ring-amber-500 cursor-pointer
+          rounded-sm cursor-pointer overflow-y-visible
           flex items-center justify-center relative"
-        style={{ backgroundColor }}
+        style={{ backgroundColor, perspective: "800px" }}
       >
-        <LoadingImage src={coverImg} />
+        <div className="open-book w-full h-full">
+          <LoadingImage src={coverImg} />
+        </div>
       </div>
     </Link>
   );

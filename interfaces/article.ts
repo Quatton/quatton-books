@@ -29,7 +29,7 @@ export default class Article {
   ) {
     this.id = id;
     this.title = title;
-    this.type = type;
+    this.type = type || "client";
     this.collectionId = collectionId;
     this.isAssetsLoaded = isAssetsLoaded || false;
   }

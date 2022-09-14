@@ -45,6 +45,7 @@ a {
     justify-items-center
     ease-in-out;
   }
+
   .book-card {
     @apply absolute common aspect-square shadow-lg select-none
     rounded-md flex items-center justify-center overflow-hidden
@@ -63,6 +64,15 @@ a {
 
   .page-nav-button {
     @apply text-amber-900 text-sm font-light select-none;
+  }
+
+  .open-book {
+    transform-origin: left;
+    transition: transform 0.2s;
+  }
+
+  .open-book:hover {
+    transform: rotateY(-30deg);
   }
 }
 @layer utilities {
