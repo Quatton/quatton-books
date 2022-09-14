@@ -24,9 +24,7 @@ export default function BookCover({
           flex items-center justify-center relative"
         style={{ backgroundColor, perspective: "800px" }}
       >
-        <div className="open-book w-full h-full">
-          <LoadingImage src={coverImg} />
-        </div>
+        <LoadingImage src={coverImg} />
       </div>
     </Link>
   );

@@ -5,6 +5,7 @@ import { MultilingualText } from "./text";
 
 export default interface Collection {
   id: string;
+  index: number;
   title: MultilingualText;
   featured: DocumentReference[];
   articles?: Article[];
@@ -13,10 +14,12 @@ export default interface Collection {
 export default class Collection {
   constructor(
     id: string,
+    index: number,
     title: MultilingualText,
     featured: DocumentReference[]
   ) {
     this.id = id;
+    this.index = index;
     this.title = title;
     this.featured = typeof featured === "undefined" ? [] : featured;
   }

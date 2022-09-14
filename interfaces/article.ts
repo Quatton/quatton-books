@@ -11,6 +11,7 @@ export type ArticleTypeName = "client" | "server";
 
 export default interface Article {
   id: string; //articleId
+  index: number;
   title: MultilingualText;
   collectionId: string;
   type: ArticleTypeName;
@@ -22,12 +23,14 @@ export default interface Article {
 export default class Article {
   constructor(
     id: string,
+    index: number,
     title: MultilingualText,
     type: ArticleTypeName,
     collectionId: string,
     isAssetsLoaded: boolean
   ) {
     this.id = id;
+    this.index = index;
     this.title = title;
     this.type = type || "client";
     this.collectionId = collectionId;

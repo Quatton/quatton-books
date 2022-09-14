@@ -22,13 +22,14 @@ const collectionConverter = {
   toFirestore: (collection: Collection) => {
     return {
       id: collection.id,
+      index: collection.index,
       title: collection.title,
       featured: collection.featured,
     };
   },
   fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
     const data = snapshot.data(options)!;
-    return new Collection(snapshot.id, data.title, data.featured);
+    return new Collection(snapshot.id, data.index, data.title, data.featured);
   },
 };
 
@@ -36,6 +37,7 @@ const articleConverter = {
   toFirestore: (article: Article) => {
     return {
       id: article.id,
+      index: article.index,
       title: article.title,
       type: article.type,
     };
@@ -44,6 +46,7 @@ const articleConverter = {
     const data = snapshot.data(options)!;
     return new Article(
       snapshot.id,
+      data.index,
       data.title,
       data.type,
       snapshot.ref.parent.parent?.id!,
