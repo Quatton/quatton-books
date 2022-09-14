@@ -16,7 +16,7 @@ export default function BookCover({
   const backgroundColor = useRandomColor();
 
   return (
-    <Link href={{ query: { collectionId, articleId } }}>
+    <Link href={`/${collectionId}/${articleId}`}>
       <div
         className="
           h-[7.5rem] sm:h-36 aspect-square drop-shadow-md
