@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Image from "next/image";
+import { PLACEHOLDER_URL } from "@/constants/placeholder";
 
 type Props = {
-  src: string;
+  src?: string;
 };
 
 export default function LoadingImage({ src }: Props) {
@@ -36,7 +37,7 @@ export default function LoadingImage({ src }: Props) {
       </div>
       <div className="open-book w-full h-full shadow-md">
         <Image
-          src={src}
+          src={src ? src : PLACEHOLDER_URL}
           onLoadingComplete={() => setLoading(false)}
           layout="fill"
           style={{

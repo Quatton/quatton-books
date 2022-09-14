@@ -1,7 +1,8 @@
-import BasicCollection from "@/components/Collections/BasicCollection";
+import BookCover from "@/components/BookCover";
 import Collection from "@/interfaces/collection";
 import { Locale } from "@/interfaces/text";
 import { getCollections } from "@/utils/api";
+import _ from "lodash";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,18 +13,19 @@ export default function Home({ collections }: { collections: Collection[] }) {
   const locale = router.locale as Locale;
   return (
     <Layout>
-      {collections.map((collection) => (
-        <div className="pt-2 flex flex-col" key={collection.id}>
-          <div className="px-4 py-2">
-            <Link href={collection.id} passHref>
-              <a className="cursor-pointer text-amber-900 hover:text-amber-700 hover:underline underline-offset-2">
-                {collection.title[locale]}
-              </a>
-            </Link>
-          </div>
-          <BasicCollection {...collection} />
+      <div className="w-full h-full flex flex-col items-center py-10 overflow-y-auto">
+        <div className="grid grid-cols-4 grid-rows-4 gap-2 overflow-visible">
+          {collections
+            .filter((collection) =>
+              Object.keys(collection.title).includes(locale)
+            )
+            .map((collection) => (
+              <Link href={`/${collection.id}`} key={collection.id} passHref>
+                <BookCover coverImg={collection.articles![0]?.coverImageUrl} />
+              </Link>
+            ))}
         </div>
-      ))}
+      </div>
     </Layout>
   );
 }

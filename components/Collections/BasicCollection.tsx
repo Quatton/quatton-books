@@ -3,6 +3,7 @@ import BookCover from "../BookCover";
 import _ from "lodash";
 import { Locale, MultilingualText } from "@/interfaces/text";
 import Article from "@/interfaces/article";
+import Link from "next/link";
 
 type Props = {
   title: MultilingualText;
@@ -24,12 +25,9 @@ export default function BasicCollection({
       </div>
       <div className="p-4 flex gap-1 overflow-x-auto overflow-y-visible no-scrollbar">
         {articles?.map((article) => (
-          <BookCover
-            key={article.id}
-            collectionId={collectionId}
-            articleId={article.id}
-            coverImg={article.coverImageUrl!}
-          />
+          <Link href={`/${collectionId}/${article.id}`}>
+            <BookCover key={article.id} coverImg={article.coverImageUrl!} />
+          </Link>
         ))}
       </div>
     </div>
