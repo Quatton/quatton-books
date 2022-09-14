@@ -22,6 +22,7 @@ export default function LocaleNotSupported({ localeSupported }: Props) {
         <code className="prose">
           {localeSupported.map((locale) => (
             <div
+              key={locale}
               onClick={() =>
                 router.push(pathname, asPath, { locale, shallow: true })
               }
