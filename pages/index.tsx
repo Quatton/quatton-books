@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import styles from "@/styles/Home.module.css";
+import { PLACEHOLDER_URL } from "@/constants/placeholder";
 
 export default function Home({ collections }: { collections: Collection[] }) {
   const router = useRouter();
@@ -17,21 +18,25 @@ export default function Home({ collections }: { collections: Collection[] }) {
   collections.forEach((collection) => (ranges[collection.index] = collection));
   return (
     <Layout>
-      <div className="w-full h-full flex flex-col items-center justify-center py-10 overflow-y-auto">
-        <div className={styles.squaredSquare}>
+      <div className={styles.container}>
+        <div
+          className={styles.squaredSquare}
+          style={{
+            perspective: "800px",
+          }}
+        >
           {ranges.map((collection, idx) => (
             <div>
               <Link href={`/${collection.id}`} passHref>
                 <a>
                   <LoadingImage
                     src={
-                      ""
-                      // collection.articles
-                      //   ? collection.articles[0]?.coverImageUrl
-                      //   : ""
+                      collection.articles
+                        ? collection.articles[0]?.coverImageUrl
+                        : ""
                     }
                   />
-                  <div className="absolute w-full h-full flex items-center justify-center">
+                  <div className="absolute w-full h-full flex items-center justify-center opacity-20">
                     {idx + 1}
                   </div>
                 </a>

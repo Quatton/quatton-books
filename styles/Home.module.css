@@ -1,14 +1,36 @@
+.container {
+  @apply w-full h-full flex flex-col items-center justify-center py-10 overflow-y-auto;
+}
+
+.container {
+  perspective: 800px;
+}
+
 .squaredSquare {
   @apply grid squared-square h-96 sm:h-[36rem] aspect-square;
 }
 
 .squared-square {
+  perspective: 800px;
+  animation: bigbob 30s ease-in-out infinite alternate;
+  transform-style: preserve-3d;
+  transform: rotateY(-5deg);
   grid-template-rows: 27fr 8fr 11fr 4fr 2fr 7fr 11fr 5fr 4fr 33fr;
   grid-template-columns: 29fr 4fr 17fr 4fr 9fr 2fr 5fr 12fr 3fr 3fr 5fr 19fr;
 }
 
+.squaredSquare > *:nth-child(2n) {
+  position: relative;
+  animation: bob 20s ease-in-out infinite alternate;
+}
+
+.squaredSquare > *:nth-child(2n + 1) {
+  position: relative;
+  animation: bob 15s ease-in-out infinite alternate-reverse;
+}
+
 .squaredSquare > * {
-  @apply relative;
+  @apply w-full h-full justify-center shadow-2xl;
 }
 
 .squaredSquare > *:nth-child(1) {
@@ -93,4 +115,28 @@
 
 .squaredSquare > *:nth-child(21) {
   @apply col-span-2 row-span-1;
+}
+
+@keyframes bob {
+  0% {
+    filter: brightness(0.8);
+    transform: translateY(-5%) rotateY(90deg) translateX(calc(0% + 10px))
+      rotateY(-88deg);
+  }
+  100% {
+    filter: brightness(1);
+    transform: translateY(5%) rotateY(-90deg) translateX(calc(5% + 10px))
+      rotateY(88deg);
+  }
+}
+
+@keyframes bob {
+  0% {
+    transform: translateY(-5%) rotateY(90deg) translateX(calc(0% + 10px))
+      rotateY(-85deg);
+  }
+  100% {
+    transform: translateY(5%) rotateY(-90deg) translateX(calc(5% + 10px))
+      rotateY(85deg);
+  }
 }
