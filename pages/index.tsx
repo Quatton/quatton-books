@@ -21,7 +21,11 @@ export default function Home({ collections }: { collections: Collection[] }) {
             )
             .map((collection) => (
               <Link href={`/${collection.id}`} key={collection.id} passHref>
-                <BookCover coverImg={collection.articles![0]?.coverImageUrl} />
+                <a>
+                  <BookCover
+                    coverImg={collection.articles![0]?.coverImageUrl}
+                  />
+                </a>
               </Link>
             ))}
         </div>
