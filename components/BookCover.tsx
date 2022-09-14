@@ -5,7 +5,7 @@ import LoadingImage from "./Loading";
 type Props = {
   coverImg?: string;
   collectionId: string;
-  articleId?: string;
+  articleId: string;
 };
 
 export default function BookCover({
@@ -14,18 +14,19 @@ export default function BookCover({
   articleId,
 }: Props) {
   const backgroundColor = useRandomColor();
-
   return (
-    <Link href={`/${collectionId}${articleId ? "/" + articleId : ""}`} passHref>
+    <Link href={`/${collectionId}/${articleId}`} passHref>
       <a>
         <div
           className="
             h-24 sm:h-36 aspect-square drop-shadow-md
             rounded-sm cursor-pointer overflow-y-visible
             flex items-center justify-center relative"
-          style={{ backgroundColor, perspective: "800px" }}
+          style={{ perspective: "800px", backgroundColor }}
         >
-          <LoadingImage src={coverImg} />
+          <div className="open-book w-full h-full">
+            <LoadingImage src={coverImg} />
+          </div>
         </div>
       </a>
     </Link>

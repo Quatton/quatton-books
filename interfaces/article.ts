@@ -70,8 +70,10 @@ export default class Article {
   data() {
     return {
       id: this.id,
+      index: this.index,
       title: this.title,
       type: this.type,
+      collectionId: this.collectionId,
       coverImageUrl: this.coverImageUrl || PLACEHOLDER_URL,
       assets: this.assets || null,
     };

@@ -1,18 +1,21 @@
 import { useState } from "react";
 import Image from "next/image";
 import { PLACEHOLDER_URL } from "@/constants/placeholder";
+import { useRandomColor } from "@/utils/hooks";
 
 type Props = {
   src?: string;
 };
 
 export default function LoadingImage({ src }: Props) {
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(!!src);
+  const backgroundColor = useRandomColor();
   return (
     <>
       <div
         role="status"
         className="absolute w-full h-full flex items-center justify-center"
+        style={{ backgroundColor }}
       >
         <svg
           className={`inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-white opacity-60`}
@@ -35,16 +38,16 @@ export default function LoadingImage({ src }: Props) {
         </svg>
         <span className="sr-only">Loading...</span>
       </div>
-      <div className="open-book w-full h-full shadow-md">
+      {src && (
         <Image
-          src={src ? src : PLACEHOLDER_URL}
+          src={src}
           onLoadingComplete={() => setLoading(false)}
           layout="fill"
           style={{
             display: isLoading ? "none" : "block",
           }}
         />
-      </div>
+      )}
     </>
   );
 }

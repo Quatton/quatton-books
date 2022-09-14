@@ -56,6 +56,7 @@ export default class Collection {
   data() {
     return {
       id: this.id,
+      index: this.index,
       title: this.title,
       articles: this.articles?.map((article) => article.data()) || [],
     };
