@@ -9,6 +9,8 @@ import {
   DocumentSnapshot,
   getDoc,
   getDocs,
+  orderBy,
+  query,
   setDoc,
   SnapshotOptions,
   updateDoc,
@@ -59,7 +61,7 @@ const articleConverter = {
  * Get all collections for index page.
  */
 export async function getCollections(): Promise<Collection[]> {
-  const q = collection(firestore, "collections");
+  const q = query(collection(firestore, "collections"), orderBy("index"));
   const snapshot = await getDocs(q.withConverter(collectionConverter));
 
   const col = snapshot.docs
@@ -118,10 +120,13 @@ export async function getAllArticlesInCollection(
 ): Promise<Article[]> {
   const snapshot = (
     await getDocs(
-      collection(
-        firestore,
-        `collections/${collectionId}/articles`
-      ).withConverter(articleConverter)
+      query(
+        collection(
+          firestore,
+          `collections/${collectionId}/articles`
+        ).withConverter(articleConverter),
+        orderBy("index")
+      )
     )
   ).docs;
   const articles = snapshot.map((doc) => doc.data());
