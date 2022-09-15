@@ -15,7 +15,7 @@ export default function LoadingImage({ src }: Props) {
       <div
         role="status"
         className={`absolute w-full h-full flex items-center justify-center
-        ${src || "opacity-50"}`}
+        ${src || "opacity-60"}`}
         style={{ backgroundColor }}
       >
         <svg
