@@ -26,7 +26,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                 <a
                   className="
                   relative w-[92%] h-[92%] 
-                  flex items-center justify-center
+                  flex items-center justify-center [&:hover+span]:hidden
                   hover:brightness-125 [&:hover_img]:blur-sm
                   [&:img]:duration-500 transition-all
                   "
@@ -52,7 +52,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   </h1>
                 </a>
               </Link>
-              <div className="w-full h-full shadow-md absolute opacity-0 sm:hidden hover:hidden"></div>
+              <span className="w-full h-full shadow-md absolute opacity-0 sm:hidden cursor-pointer hover:hidden"></span>
             </div>
           ))}
         </div>
