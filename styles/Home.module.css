@@ -37,6 +37,11 @@
   transform: translateZ(230px);
 }
 
+.squaredSquare > *:focus h1 {
+  opacity: 100;
+  transform: translateZ(230px);
+}
+
 .squaredSquare a {
   perspective: 800px;
 }
@@ -128,12 +133,12 @@
 @keyframes bob {
   0% {
     filter: brightness(0.8);
-    transform: translateY(-10%) rotateY(-90deg) translateX(calc(5% + 20px))
+    transform: translateY(10%) rotateY(-90deg) translateX(calc(5% + 20px))
       rotateY(85deg);
   }
   100% {
-    filter: brightness(1.2);
-    transform: translateY(10%) rotateY(-90deg) translateX(calc(15% + 20px))
+    filter: brightness(1);
+    transform: translateY(-10%) rotateY(-90deg) translateX(calc(15% + 20px))
       rotateY(95deg) translateY(5%);
   }
 }

@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import styles from "@/styles/Home.module.css";
-import { useEffect, useState } from "react";
 
 export default function Home({ collections }: { collections: Collection[] }) {
   const router = useRouter();
@@ -26,16 +25,18 @@ export default function Home({ collections }: { collections: Collection[] }) {
           {ranges.map((collection, idx) => (
             <div
               tabIndex={idx}
-              className="shadow-lg flex items-center justify-center [&:focus_>_span]:hidden"
+              className="flex items-center justify-center [&:focus_>_span]:hidden [&:focus_>_a]:brightness-110
+              [&:focus_img]:blur-sm [&:img]:duration-500"
               key={idx}
             >
               <Link href={collection.id ? `/${collection.id}` : "#"} passHref>
                 <a
+                  onTouchStart={(e) => e.preventDefault}
                   className="
-                  relative w-[92%] h-[92%] 
+                  relative w-[92%] h-[92%] shadow-xl drop-shadow-md
                   flex items-center justify-center [&:hover+span]:hidden
                   hover:brightness-110 [&:hover_img]:blur-sm
-                  [&:img]:duration-500 transition-all
+                  transition-all
                   "
                 >
                   <LoadingImage
@@ -59,7 +60,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   </h1>
                 </a>
               </Link>
-              <span className="w-full h-full absolute cursor-pointer hover:hidden"></span>
+              <span className="w-full h-full absolute cursor-pointer sm:hidden"></span>
             </div>
           ))}
         </div>
