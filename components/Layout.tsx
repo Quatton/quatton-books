@@ -1,4 +1,3 @@
-import EventEmitter from "events";
 import Link from "next/link";
 import Breadcrumb from "./Breadcrumb";
 import LangSelect from "./LanguageSelector";
