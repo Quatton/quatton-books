@@ -13,58 +13,56 @@ import { useEffect, useState } from "react";
 export default function Home({ collections }: { collections: Collection[] }) {
   const router = useRouter();
   const locale = router.locale as Locale;
-  const [isClient, setIsClient] = useState(false);
   const ranges: any[] = _.range(21);
 
   collections.forEach(async (collection) => {
     ranges[collection.index] = collection;
   });
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   return (
     <Layout>
       <div className={styles.container}>
-        {isClient && (
-          <div className={styles.squaredSquare}>
-            {ranges.map((collection, idx) => (
-              <div className="flex items-center justify-center" key={idx}>
-                <Link href={`/${collection.id ? collection.id : ""}`} passHref>
-                  <a
-                    className="
+        <div className={styles.squaredSquare}>
+          {ranges.map((collection, idx) => (
+            <div
+              tabIndex={idx}
+              className="shadow-lg flex items-center justify-center [&:focus_>_span]:hidden"
+              key={idx}
+            >
+              <Link href={collection.id ? `/${collection.id}` : "#"} passHref>
+                <a
+                  className="
                   relative w-[92%] h-[92%] 
                   flex items-center justify-center [&:hover+span]:hidden
-                  hover:brightness-125 [&:hover_img]:blur-sm
+                  hover:brightness-110 [&:hover_img]:blur-sm
                   [&:img]:duration-500 transition-all
                   "
-                  >
-                    <LoadingImage
-                      src={
-                        collection.articles
-                          ? collection.articles[0]?.coverImageUrl
-                          : ""
-                      }
-                    />
-                    <h1
-                      className="
+                >
+                  <LoadingImage
+                    src={
+                      collection.articles
+                        ? collection.articles[0]?.coverImageUrl
+                        : ""
+                    }
+                  />
+                  <h1
+                    className="
                     opacity-0 transition-all absolute text-xs
                     w-5/6 flex items-center justify-center py-2
                     bg-neutral-400/80 text-center rounded-sm px-2"
-                    >
-                      {collection.title
+                  >
+                    {collection.title
+                      ? collection.title[locale]
                         ? collection.title[locale]
-                          ? collection.title[locale]
-                          : collection.title[Object.keys(collection.title)[0]]
-                        : idx}
-                    </h1>
-                  </a>
-                </Link>
-                <span className="w-full h-full shadow-md absolute opacity-0 cursor-pointer active:hidden sm:hover:hidden"></span>
-              </div>
-            ))}
-          </div>
-        )}
+                        : collection.title[Object.keys(collection.title)[0]]
+                      : idx}
+                  </h1>
+                </a>
+              </Link>
+              <span className="w-full h-full absolute cursor-pointer hover:hidden"></span>
+            </div>
+          ))}
+        </div>
       </div>
     </Layout>
   );
