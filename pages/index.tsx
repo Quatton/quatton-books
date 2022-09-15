@@ -15,10 +15,11 @@ export default function Home({ collections }: { collections: Collection[] }) {
   const locale = router.locale as Locale;
   const [isClient, setIsClient] = useState(false);
   const ranges: any[] = _.range(21);
+
+  collections.forEach(async (collection) => {
+    ranges[collection.index] = collection;
+  });
   useEffect(() => {
-    collections.forEach(
-      (collection) => (ranges[collection.index] = collection)
-    );
     setIsClient(true);
   }, []);
 
@@ -28,7 +29,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
         {isClient && (
           <div className={styles.squaredSquare}>
             {ranges.map((collection, idx) => (
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center" key={idx}>
                 <Link href={`/${collection.id ? collection.id : ""}`} passHref>
                   <a
                     className="
@@ -59,7 +60,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                     </h1>
                   </a>
                 </Link>
-                <span className="w-full h-full shadow-md absolute opacity-0 cursor-pointer active:hidden hover:hidden"></span>
+                <span className="w-full h-full shadow-md absolute opacity-0 cursor-pointer active:hidden sm:hover:hidden"></span>
               </div>
             ))}
           </div>
@@ -76,6 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
       async (collection) => await collection.saveFeaturedArticles()
     )
   );
+
   return {
     props: { collections: collections.map((collection) => collection.data()) },
     revalidate: 60,
