@@ -27,7 +27,8 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   className="
                   relative w-[92%] h-[92%] 
                   flex items-center justify-center
-                  hover:brightness-125 [&:hover_img]:blur-sm [&:img]:duration-500 transition-all
+                  hover:brightness-125 [&:hover_img]:blur-sm
+                  [&:img]:duration-500 transition-all
                   "
                 >
                   <LoadingImage
