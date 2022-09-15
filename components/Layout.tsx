@@ -25,7 +25,7 @@ export default function Layout({ children }: Props) {
           <Breadcrumb />
         </div>
       </div>
-      <div className="w-full h-full overflow-y-auto no-scrollbar pt-32 from-amber-50 to-amber-200 bg-gradient-to-bl overflow-x-hidden">
+      <div className="w-full h-full overflow-y-auto no-scrollbar pt-32 bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100 overflow-x-hidden">
         {children}
       </div>
     </div>
