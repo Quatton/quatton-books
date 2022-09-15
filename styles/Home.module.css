@@ -8,22 +8,37 @@
 
 .squaredSquare {
   @apply grid relative place-items-stretch 
-  h-72 sm:h-96 aspect-square;
+  w-4/5 sm:w-[30rem] aspect-square;
 }
 
 .squaredSquare {
   transform-style: preserve-3d;
+  perspective: 800px;
   transform: rotateY(-5deg);
   grid-template-rows: 27fr 8fr 11fr 4fr 2fr 7fr 11fr 5fr 4fr 33fr;
   grid-template-columns: 29fr 4fr 17fr 4fr 9fr 2fr 5fr 12fr 3fr 3fr 5fr 19fr;
 }
 
 .squaredSquare > *:nth-child(2n) {
-  animation: bob 20s ease-in-out infinite alternate;
+  animation: bob 10s ease-in-out infinite alternate;
 }
 
 .squaredSquare > *:nth-child(2n + 1) {
-  animation: bob 15s ease-in-out infinite alternate-reverse;
+  animation: bob 10s ease-in-out infinite alternate-reverse;
+}
+
+.squaredSquare > * {
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+.squaredSquare a:hover > h1 {
+  opacity: 100;
+  transform: translateZ(230px);
+}
+
+.squaredSquare a {
+  perspective: 800px;
 }
 
 .squaredSquare > *:nth-child(1) {
@@ -113,12 +128,12 @@
 @keyframes bob {
   0% {
     filter: brightness(0.8);
-    transform: translateY(-5%) rotateY(-90deg) translateX(calc(5% + 20px))
-      rotateY(88deg);
+    transform: translateY(-10%) rotateY(-90deg) translateX(calc(5% + 20px))
+      rotateY(85deg);
   }
   100% {
     filter: brightness(1.2);
-    transform: rotateY(-90deg) translateX(calc(15% + 20px)) rotateY(92deg)
-      translateY(5%);
+    transform: translateY(10%) rotateY(-90deg) translateX(calc(15% + 20px))
+      rotateY(95deg) translateY(5%);
   }
 }

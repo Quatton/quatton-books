@@ -19,16 +19,17 @@ export default function Home({ collections }: { collections: Collection[] }) {
   return (
     <Layout>
       <div className={styles.container}>
-        <div
-          className={styles.squaredSquare}
-          style={{
-            perspective: "800px",
-          }}
-        >
+        <div className={styles.squaredSquare}>
           {ranges.map((collection, idx) => (
             <div className="flex items-center justify-center">
               <Link href={`/${collection.id ? collection.id : ""}`} passHref>
-                <a className="relative w-5/6 h-5/6">
+                <a
+                  className="
+                  relative w-[92%] h-[92%] 
+                  flex items-center justify-center
+                  hover:brightness-125 [&:hover_img]:blur-sm [&:img]:duration-500 transition-all
+                  "
+                >
                   <LoadingImage
                     src={
                       collection.articles
@@ -36,11 +37,21 @@ export default function Home({ collections }: { collections: Collection[] }) {
                         : ""
                     }
                   />
-                  <div className="absolute w-full h-full flex items-center justify-center opacity-20">
-                    {idx}
-                  </div>
+                  <h1
+                    className="
+                    opacity-0 transition-all absolute text-xs
+                    w-5/6 flex items-center justify-center py-2
+                    bg-neutral-400/80 text-center rounded-sm px-2"
+                  >
+                    {collection.title
+                      ? collection.title[locale]
+                        ? collection.title[locale]
+                        : collection.title[Object.keys(collection.title)[0]]
+                      : idx}
+                  </h1>
                 </a>
               </Link>
+              <div className="w-full h-full shadow-md absolute opacity-0 sm:hidden hover:hidden"></div>
             </div>
           ))}
         </div>
