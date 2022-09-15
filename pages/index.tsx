@@ -26,9 +26,9 @@ export default function Home({ collections }: { collections: Collection[] }) {
           }}
         >
           {ranges.map((collection, idx) => (
-            <div>
-              <Link href={`/${collection.id}`} passHref>
-                <a>
+            <div className="flex items-center justify-center">
+              <Link href={`/${collection.id ? collection.id : ""}`} passHref>
+                <a className="relative w-5/6 h-5/6">
                   <LoadingImage
                     src={
                       collection.articles
@@ -37,7 +37,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                     }
                   />
                   <div className="absolute w-full h-full flex items-center justify-center opacity-20">
-                    {idx + 1}
+                    {idx}
                   </div>
                 </a>
               </Link>
