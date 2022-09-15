@@ -52,7 +52,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   </h1>
                 </a>
               </Link>
-              <span className="w-full h-full shadow-md absolute opacity-0 sm:hidden cursor-pointer active:hidden"></span>
+              <span className="w-full h-full shadow-md absolute opacity-0 cursor-pointer active:hidden hover:hidden transition-all"></span>
             </div>
           ))}
         </div>
