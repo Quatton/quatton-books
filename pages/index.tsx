@@ -26,7 +26,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
             <div
               tabIndex={idx}
               className="flex items-center justify-center [&:focus_>_span]:hidden [&:focus_>_a]:brightness-110
-              [&:focus_img]:blur-sm [&:img]:duration-500"
+              [&:focus_img]:blur-sm [&:img]:duration-500 relative"
               key={idx}
             >
               <Link href={collection.id ? `/${collection.id}` : "#"} passHref>
