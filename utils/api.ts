@@ -1,61 +1,22 @@
 import { PLACEHOLDER_URL } from "@/constants/placeholder";
-import Article from "@/interfaces/article";
+import Article, { articleConverter } from "@/interfaces/article";
 import Assets, { Images, ImageSource } from "@/interfaces/assets";
-import Collection from "@/interfaces/collection";
+import Collection, { collectionConverter } from "@/interfaces/collection";
 import {
   collection,
   doc,
   DocumentReference,
-  DocumentSnapshot,
   getDoc,
   getDocs,
   orderBy,
   query,
   setDoc,
-  SnapshotOptions,
   updateDoc,
 } from "firebase/firestore";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import { getPlaiceholder } from "plaiceholder";
 import { firestore, storage } from "./firebase.config";
-
-const collectionConverter = {
-  toFirestore: (collection: Collection) => {
-    return {
-      id: collection.id,
-      index: collection.index,
-      title: collection.title,
-      featured: collection.featured,
-    };
-  },
-  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
-    const data = snapshot.data(options)!;
-    return new Collection(snapshot.id, data.index, data.title, data.featured);
-  },
-};
-
-const articleConverter = {
-  toFirestore: (article: Article) => {
-    return {
-      id: article.id,
-      index: article.index,
-      title: article.title,
-      type: article.type,
-    };
-  },
-  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
-    const data = snapshot.data(options)!;
-    return new Article(
-      snapshot.id,
-      data.index,
-      data.title,
-      data.type,
-      snapshot.ref.parent.parent?.id!,
-      data.isAssetsLoaded
-    );
-  },
-};
 
 /**
  * Get all collections for index page.

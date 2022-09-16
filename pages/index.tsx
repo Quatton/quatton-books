@@ -39,13 +39,7 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   transition-all
                   "
                 >
-                  <LoadingImage
-                    src={
-                      collection.articles
-                        ? collection.articles[0]?.coverImageUrl
-                        : ""
-                    }
-                  />
+                  <LoadingImage />
                   <h1
                     className="
                     opacity-0 transition-all absolute text-xs
@@ -71,11 +65,6 @@ export default function Home({ collections }: { collections: Collection[] }) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
-  await Promise.all(
-    collections.map(
-      async (collection) => await collection.saveFeaturedArticles()
-    )
-  );
 
   return {
     props: { collections: collections.map((collection) => collection.data()) },

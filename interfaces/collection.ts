@@ -1,5 +1,9 @@
 import { getArticleByRef, getAllArticlesInCollection } from "@/utils/api";
-import { DocumentReference } from "firebase/firestore";
+import {
+  DocumentReference,
+  DocumentSnapshot,
+  SnapshotOptions,
+} from "firebase/firestore";
 import Article from "./article";
 import { MultilingualText } from "./text";
 
@@ -7,37 +11,14 @@ export default interface Collection {
   id: string;
   index: number;
   title: MultilingualText;
-  featured: DocumentReference[];
   articles?: Article[];
 }
 
 export default class Collection {
-  constructor(
-    id: string,
-    index: number,
-    title: MultilingualText,
-    featured: DocumentReference[]
-  ) {
+  constructor(id: string, index: number, title: MultilingualText) {
     this.id = id;
     this.index = index;
     this.title = title;
-    this.featured = typeof featured === "undefined" ? [] : featured;
-  }
-
-  async getFeaturedArticles() {
-    const articles = (
-      await Promise.all(
-        this.featured.map(
-          async (ref) => await (await getArticleByRef(ref))?.saveCoverImageUrl()
-        )
-      )
-    ).filter((article): article is Article => !!article);
-    return articles;
-  }
-
-  async saveFeaturedArticles() {
-    this.articles = await this.getFeaturedArticles();
-    return this;
   }
 
   async getAllArticles() {
@@ -58,7 +39,21 @@ export default class Collection {
       id: this.id,
       index: this.index,
       title: this.title,
-      articles: this.articles?.map((article) => article.data()) || [],
+      articles: this.articles?.map((item) => item.data()) || [],
     };
   }
 }
+
+export const collectionConverter = {
+  toFirestore: (collection: Collection) => {
+    return {
+      id: collection.id,
+      index: collection.index,
+      title: collection.title,
+    };
+  },
+  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data(options)!;
+    return new Collection(snapshot.id, data.index, data.title);
+  },
+};

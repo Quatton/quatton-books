@@ -4,20 +4,19 @@ import {
   getCollectionById,
   getCoverImageUrl,
 } from "@/utils/api";
+import { DocumentSnapshot, SnapshotOptions } from "firebase/firestore";
 import Assets from "./assets";
 import { MultilingualText } from "./text";
-
-export type ArticleTypeName = "client" | "server";
 
 export default interface Article {
   id: string; //articleId
   index: number;
   title: MultilingualText;
   collectionId: string;
-  type: ArticleTypeName;
-  isAssetsLoaded: boolean;
+  type: string;
   coverImageUrl?: string;
   assets?: Assets;
+  isAssetsLoaded?: boolean;
 }
 
 export default class Article {
@@ -25,14 +24,14 @@ export default class Article {
     id: string,
     index: number,
     title: MultilingualText,
-    type: ArticleTypeName,
+    type: string,
     collectionId: string,
     isAssetsLoaded: boolean
   ) {
     this.id = id;
     this.index = index;
     this.title = title;
-    this.type = type || "client";
+    this.type = type || "album";
     this.collectionId = collectionId;
     this.isAssetsLoaded = isAssetsLoaded || false;
   }
@@ -79,3 +78,25 @@ export default class Article {
     };
   }
 }
+
+export const articleConverter = {
+  toFirestore: (article: Article) => {
+    return {
+      id: article.id,
+      index: article.index,
+      title: article.title,
+      type: article.type,
+    };
+  },
+  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data(options)!;
+    return new Article(
+      snapshot.id,
+      data.index,
+      data.title,
+      data.type,
+      snapshot.ref.parent.parent?.id!,
+      data.isAssetsLoaded
+    );
+  },
+};
