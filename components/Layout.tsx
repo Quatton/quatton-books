@@ -8,8 +8,8 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="w-full h-screen flex flex-col z-50 select-none">
-      <div className="absolute w-full flex flex-col items-center justify-between shadow-md z-50 backdrop-blur-2xl">
+    <div className="w-full h-screen flex flex-col select-none bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100">
+      <div className="absolute w-full flex flex-col items-center justify-between shadow-md z-50 backdrop-blur-sm">
         <div className="w-full flex items-center justify-between px-6 py-4">
           <Link href={`/`}>
             <a className="quatton text-amber-900 text-4xl font-semibold">
@@ -24,7 +24,8 @@ export default function Layout({ children }: Props) {
           <Breadcrumb />
         </div>
       </div>
-      <div className="w-full h-full overflow-y-auto no-scrollbar pt-32 bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100 overflow-x-hidden">
+      <div className="flex flex-col no-scrollbar w-full h-full overflow-y-auto overflow-x-hidden">
+        <div className="w-full h-40"></div>
         {children}
       </div>
     </div>

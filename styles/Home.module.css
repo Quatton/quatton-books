@@ -1,20 +1,11 @@
 .container {
-  @apply w-full h-full flex flex-col items-center justify-center overflow-clip;
-}
-
-.container {
-  perspective: 800px;
+  @apply perspective w-full h-full flex flex-col items-center justify-center overflow-y-visible;
 }
 
 .squaredSquare {
-  @apply grid relative place-items-stretch 
-  w-4/5 sm:w-[30rem] aspect-square;
-}
-
-.squaredSquare {
-  transform-style: preserve-3d;
-  perspective: 800px;
-  transform: rotateY(-5deg);
+  @apply perspective grid relative place-items-stretch
+  w-4/5 sm:w-[30rem] aspect-square overflow-y-visible;
+  animation: bigbob 10s ease-in-out infinite alternate;
   grid-template-rows: 27fr 8fr 11fr 4fr 2fr 7fr 11fr 5fr 4fr 33fr;
   grid-template-columns: 29fr 4fr 17fr 4fr 9fr 2fr 5fr 12fr 3fr 3fr 5fr 19fr;
 }
@@ -28,8 +19,8 @@
 }
 
 .squaredSquare > * {
-  perspective: 800px;
-  transform-style: preserve-3d;
+  @apply perspective flex items-center justify-center [&:focus_>_span]:hidden [&:focus_>_a]:brightness-110
+  [&:focus_img]:blur-sm [&:img]:duration-500 relative;
 }
 
 .squaredSquare a:hover > h1 {
@@ -42,8 +33,25 @@
   transform: translateZ(230px);
 }
 
-.squaredSquare a {
+.book {
+  @apply perspective relative w-[92%] h-[92%] shadow-xl drop-shadow-md
+  flex items-center justify-center [&:hover+span]:hidden
+  hover:brightness-110 [&:hover_img]:blur-sm
+  transition-all;
+}
+
+.tag {
+  @apply opacity-0 transition-all absolute
+  w-5/6 flex items-center justify-center
+  bg-neutral-300/80 text-center rounded-sm;
+  font-size: 60%;
+  padding-block: 5%;
+  padding-inline: 5%;
+}
+
+.perspective {
   perspective: 800px;
+  transform-style: preserve-3d;
 }
 
 .squaredSquare > *:nth-child(1) {
@@ -140,5 +148,16 @@
     filter: brightness(1);
     transform: translateY(-10%) rotateY(-90deg) translateX(calc(15% + 20px))
       rotateY(95deg) translateY(5%);
+  }
+}
+
+@keyframes bigbob {
+  0% {
+    filter: brightness(0.8);
+    transform: rotateY(-5deg);
+  }
+  100% {
+    filter: brightness(1.2);
+    transform: rotateY(5deg);
   }
 }

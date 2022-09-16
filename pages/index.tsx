@@ -23,29 +23,14 @@ export default function Home({ collections }: { collections: Collection[] }) {
       <div className={styles.container}>
         <div className={styles.squaredSquare}>
           {ranges.map((collection, idx) => (
-            <div
-              tabIndex={idx}
-              className="flex items-center justify-center [&:focus_>_span]:hidden [&:focus_>_a]:brightness-110
-              [&:focus_img]:blur-sm [&:img]:duration-500 relative"
-              key={idx}
-            >
+            <div tabIndex={idx} key={idx}>
               <Link href={collection.id ? `/${collection.id}` : "#"} passHref>
                 <a
-                  onTouchStart={(e) => e.preventDefault}
-                  className="
-                  relative w-[92%] h-[92%] shadow-xl drop-shadow-md
-                  flex items-center justify-center [&:hover+span]:hidden
-                  hover:brightness-110 [&:hover_img]:blur-sm
-                  transition-all
-                  "
+                  onTouchStart={(e) => e.preventDefault()}
+                  className={styles.book}
                 >
                   <LoadingImage />
-                  <h1
-                    className="
-                    opacity-0 transition-all absolute text-xs
-                    w-5/6 flex items-center justify-center py-2
-                    bg-neutral-400/80 text-center rounded-sm px-2"
-                  >
+                  <h1 className={styles.tag}>
                     {collection.title
                       ? collection.title[locale]
                         ? collection.title[locale]
