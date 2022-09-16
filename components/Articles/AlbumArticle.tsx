@@ -12,7 +12,7 @@ type Props = {
   setControlEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function ImageArticle({
+export default function AlbumArticle({
   images,
   page,
   lastPage,
@@ -30,7 +30,6 @@ export default function ImageArticle({
             lastPage,
             isDoublePageView,
             setControlEnabled,
-            image,
           }}
         >
           <div

@@ -8,9 +8,6 @@ export default function NotFound() {
         <h2 className="text-xl sm:text-2xl text-center border-amber-700">
           I am not sure if I have the page you're looking for.
         </h2>
-        <h2 className="text-lg sm:text-xl text-center border-amber-700">
-          (or at least in the language you are currently selecting...)
-        </h2>
       </div>
     </Layout>
   );

@@ -1,4 +1,3 @@
-import { ArticleTypeName } from "@/interfaces/article";
 import Assets, { Images } from "@/interfaces/assets";
 import { MultilingualText } from "@/interfaces/text";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -7,7 +6,7 @@ import _ from "lodash";
 import { useState, useEffect, useContext } from "react";
 import { EventContext } from "@/utils/Event";
 import { usePageControl } from "@/utils/BookModalHooks";
-import ImageArticle from "./Articles/ImageArticle";
+import AlbumArticle from "./Articles/AlbumArticle";
 import { TILT_ANGLE } from "@/constants/bookpage";
 import { useRouter } from "next/router";
 
@@ -15,7 +14,7 @@ type Props = {
   collectionId: string;
   id: string;
   title: MultilingualText;
-  type: ArticleTypeName;
+  type: string;
   assets?: Assets;
 };
 
@@ -106,9 +105,9 @@ export default function BookModal({
         >
           {(() => {
             switch (type) {
-              case "server":
+              case "album":
                 return (
-                  <ImageArticle
+                  <AlbumArticle
                     {...{
                       images,
                       page,
