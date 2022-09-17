@@ -4,9 +4,10 @@ import LangSelect from "./LanguageSelector";
 
 type Props = {
   children: React.ReactNode;
+  bgText?: string;
 };
 
-export default function Layout({ children }: Props) {
+export default function Layout({ children, bgText }: Props) {
   return (
     <div className="w-full h-screen flex flex-col select-none bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100">
       <div className="absolute w-full flex flex-col items-center justify-between shadow-md z-50 backdrop-blur-sm">
@@ -24,7 +25,12 @@ export default function Layout({ children }: Props) {
           <Breadcrumb />
         </div>
       </div>
-      <div className="flex flex-col no-scrollbar w-full h-full overflow-y-auto overflow-x-hidden">
+      <div className="z-40 w-full h-full absolute flex items-center justify-center overflow-x-hidden">
+        <h1 className="center-text bg-gradient-to-tr from-indigo-400 via-red-400 to-yellow-300 py-2">
+          {bgText ? bgText : "QUATTON"}
+        </h1>
+      </div>
+      <div className="z-40 flex flex-col no-scrollbar w-full h-full overflow-y-auto overflow-x-hidden">
         <div className="w-full h-40"></div>
         {children}
       </div>

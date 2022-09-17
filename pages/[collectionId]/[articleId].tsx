@@ -45,7 +45,7 @@ export default function ArticlePage({ article, collectionId }: Props) {
   }
 
   return (
-    <Layout>
+    <Layout bgText={article.id}>
       {isClient && (
         <BookModal
           {...{
@@ -128,9 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: 60,
     };
   }
-  if (article.type === "server") {
-    await article.saveAssets();
-  }
+  await article.saveAssets();
   return {
     props: { article: article.data(), collectionId },
     revalidate: 60,

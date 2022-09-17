@@ -20,7 +20,7 @@ export default function CollectionPage({ collection }: Props) {
 
   if (router.isFallback) {
     return (
-      <Layout>
+      <Layout bgText={collection.id}>
         <div className="flex flex-col items-center justify-center h-full w-full gap-4 text-amber-900">
           <h2 className="text-xl sm:text-2xl text-center border-amber-700">
             what
@@ -42,7 +42,7 @@ export default function CollectionPage({ collection }: Props) {
   }
 
   return (
-    <Layout>
+    <Layout bgText={collection.id}>
       {(() => {
         switch (collection.id) {
           case "studygram":

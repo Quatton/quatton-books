@@ -4,7 +4,7 @@
 
 .squaredSquare {
   @apply perspective grid relative place-items-stretch
-  w-4/5 sm:w-[30rem] aspect-square overflow-y-visible;
+  w-3/5 sm:w-[24rem] aspect-square overflow-y-visible;
   animation: bigbob 10s ease-in-out infinite alternate;
   grid-template-rows: 27fr 8fr 11fr 4fr 2fr 7fr 11fr 5fr 4fr 33fr;
   grid-template-columns: 29fr 4fr 17fr 4fr 9fr 2fr 5fr 12fr 3fr 3fr 5fr 19fr;
@@ -25,12 +25,12 @@
 
 .squaredSquare a:hover > h1 {
   opacity: 100;
-  transform: translateZ(230px);
+  transform: translateZ(40px);
 }
 
 .squaredSquare > *:focus h1 {
   opacity: 100;
-  transform: translateZ(230px);
+  transform: translateZ(40px);
 }
 
 .book {
@@ -42,15 +42,15 @@
 
 .tag {
   @apply opacity-0 transition-all absolute
-  w-5/6 flex items-center justify-center
+  w-3/4 flex items-center justify-center
   bg-neutral-300/80 text-center rounded-sm;
-  font-size: 60%;
+  font-size: 50%;
   padding-block: 5%;
   padding-inline: 5%;
 }
 
 .perspective {
-  perspective: 800px;
+  perspective: 100px;
   transform-style: preserve-3d;
 }
 
