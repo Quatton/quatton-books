@@ -58,7 +58,6 @@ export default function CollectionPage({ collection }: Props) {
 //generate /[collectionId]
 export const getStaticPaths: GetStaticPaths = async () => {
   const collections = await getCollections();
-  console.log(collections);
   type Path = {
     params: ParsedUrlQuery;
     locale?: string | undefined;
