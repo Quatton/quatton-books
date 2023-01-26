@@ -29,7 +29,12 @@ export default function Home({ collections }: { collections: Collection[] }) {
                   onTouchStart={(e) => e.preventDefault()}
                   className={styles.book}
                 >
-                  <LoadingImage />
+                  <LoadingImage
+                    src={
+                      (collection as Collection)?.articles?.at(0)
+                        ?.coverImageUrl ?? ""
+                    }
+                  />
                   <h1 className={styles.tag}>
                     {collection.title
                       ? collection.title[locale]
@@ -50,6 +55,9 @@ export default function Home({ collections }: { collections: Collection[] }) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const collections = await getCollections();
+  await Promise.all(
+    collections.map(async (collection) => await collection.saveAllArticles())
+  );
 
   return {
     props: { collections: collections.map((collection) => collection.data()) },
