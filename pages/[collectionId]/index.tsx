@@ -84,13 +84,11 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!collection)
     return {
       notFound: true,
-      revalidate: 60,
     };
   await collection.saveAllArticles();
   return {
     props: {
       collection: collection.data(),
     },
-    revalidate: 60,
   };
 };
