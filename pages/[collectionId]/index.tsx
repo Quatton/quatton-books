@@ -42,9 +42,9 @@ export default function CollectionPage({ collection }: Props) {
   }
 
   return (
-    <Layout bgText={collection.id}>
+    <Layout bgText={collection?.id ?? ""}>
       {(() => {
-        switch (collection.id) {
+        switch (collection?.id) {
           case "studygram":
             return <InstagramCollection {...collection} />;
           default:
@@ -58,6 +58,7 @@ export default function CollectionPage({ collection }: Props) {
 //generate /[collectionId]
 export const getStaticPaths: GetStaticPaths = async () => {
   const collections = await getCollections();
+  console.log(collections);
   type Path = {
     params: ParsedUrlQuery;
     locale?: string | undefined;
