@@ -5,7 +5,7 @@ import Layout from "@/components/Layout";
 import Collection from "@/interfaces/collection";
 import { LOCALE, Locale } from "@/interfaces/text";
 import { getCollectionById, getCollections } from "@/utils/api";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
@@ -55,30 +55,30 @@ export default function CollectionPage({ collection }: Props) {
   );
 }
 
-//generate /[collectionId]
-export const getStaticPaths: GetStaticPaths = async () => {
-  const collections = await getCollections();
-  type Path = {
-    params: ParsedUrlQuery;
-    locale?: string | undefined;
-  };
-  const paths: Path[] = collections.reduce(
-    (prev, { id, title }) => [
-      ...prev,
-      ...LOCALE.map((locale) => ({
-        params: { collectionId: id },
-        locale,
-      })),
-    ],
-    [] as Path[]
-  );
-  return {
-    paths,
-    fallback: true,
-  };
-};
+// //generate /[collectionId]
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const collections = await getCollections();
+//   type Path = {
+//     params: ParsedUrlQuery;
+//     locale?: string | undefined;
+//   };
+//   const paths: Path[] = collections.reduce(
+//     (prev, { id, title }) => [
+//       ...prev,
+//       ...LOCALE.map((locale) => ({
+//         params: { collectionId: id },
+//         locale,
+//       })),
+//     ],
+//     [] as Path[]
+//   );
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { collectionId } = params as { collectionId: string };
   const collection = await getCollectionById(collectionId);
   if (!collection)
